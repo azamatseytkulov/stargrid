@@ -18,7 +18,7 @@
   --text:#88ccff;--texthi:#cceeff;--dim:#0a1828;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{background:var(--bg);color:var(--text);font-family:'Courier New',monospace;height:100%;overflow:hidden}
+html,body{background:var(--bg);color:var(--text);font-family:'Courier New',monospace;height:100%;height:100dvh;overflow:hidden}
 #stars{position:fixed;inset:0;pointer-events:none;z-index:0;
   background:
     radial-gradient(1px 1px at 5%  8%,#ffffff22 0%,transparent 100%),
@@ -32,7 +32,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'Courier New',monos
     radial-gradient(1px 1px at 62% 85%,#ffffff18 0%,transparent 100%),
     radial-gradient(2px 2px at  3% 55%,#00ff6612 0%,transparent 100%),
     radial-gradient(2px 2px at 90%  6%,#00ff6610 0%,transparent 100%);}
-.scr{display:none;position:fixed;inset:0;flex-direction:column;align-items:center;z-index:1}
+.scr{display:none;position:fixed;inset:0;height:100dvh;flex-direction:column;align-items:center;z-index:1}
 .scr.on{display:flex}
 
 /* MENU */
@@ -52,25 +52,25 @@ html,body{background:var(--bg);color:var(--text);font-family:'Courier New',monos
 /* BATTLE */
 #s-battle{justify-content:flex-start;padding:0;height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .bh{display:flex;justify-content:space-between;align-items:center;
-  padding:10px 14px;background:#020a18;border-bottom:1px solid var(--brd);flex-shrink:0}
+  padding:5px 12px;background:#020a18;border-bottom:1px solid var(--brd);flex-shrink:0}
 .bh-t{font-size:9px;letter-spacing:3px;color:#0d2844}
 .turn-b{font-size:11px;padding:4px 12px;border-radius:12px;letter-spacing:1px;font-weight:bold;transition:all .3s}
 .tp{color:#00ff66;background:#001208;border:1px solid #005522;text-shadow:0 0 8px #00ff6666}
 .te{color:#ff3322;background:#120004;border:1px solid #550010;text-shadow:0 0 8px #ff222266}
-.cr{display:flex;flex-direction:column;gap:4px;padding:4px 5px 2px;flex-shrink:0}
+.cr{display:flex;flex-direction:row;gap:5px;padding:4px 5px 2px;flex-shrink:0}
 .cb{flex:1;min-width:0}
-.cl{font-size:9px;color:#0d2844;letter-spacing:2px;text-align:center;margin-bottom:3px}
+.cl{font-size:8px;color:#0d2844;letter-spacing:1px;text-align:center;margin-bottom:1px}
 canvas{display:block;width:100%!important;height:auto!important;
   border-radius:5px;border:1px solid #0a1a30;cursor:grab;touch-action:none}
 canvas:active{cursor:grabbing}
 
 .sb{display:flex;gap:4px;padding:4px 6px;flex-shrink:0;border-top:1px solid var(--brd)}
-.sv{flex:1;background:#040c20;border:1px solid var(--brd);border-radius:6px;padding:6px;text-align:center}
+.sv{flex:1;background:#040c20;border:1px solid var(--brd);border-radius:6px;padding:3px 4px;text-align:center}
 .sl{font-size:7px;color:#0d2844;letter-spacing:1px}
 .sn{font-size:16px;color:var(--text);margin-top:1px;font-weight:bold}
-.mb{padding:10px 12px;background:#030c1e;border-top:1px solid var(--brd);
-  font-size:12px;min-height:34px;text-align:center;flex-shrink:0;letter-spacing:.5px;line-height:1.4;transition:color .25s}
-.ctrl{padding:8px 8px 6px;border-top:1px solid var(--brd);flex-shrink:0;background:#020a18}
+.mb{padding:5px 10px;background:#030c1e;border-top:1px solid var(--brd);
+  font-size:11px;min-height:20px;text-align:center;flex-shrink:0;letter-spacing:.3px;line-height:1.3;transition:color .25s}
+.ctrl{padding:5px 8px 4px;border-top:1px solid var(--brd);flex-shrink:0;background:#020a18}
 .ctrl-lbl{font-size:9px;color:#0d2844;letter-spacing:2px;margin-bottom:5px}
 .coord-row{display:flex;gap:5px;align-items:stretch;margin-bottom:7px}
 .cf{flex:1;display:flex;flex-direction:column;gap:3px}
@@ -92,10 +92,10 @@ select:focus{border-color:var(--green2);box-shadow:0 0 10px #00ff6622}
 .scan:disabled{opacity:.3;cursor:default}
 .xb{padding:7px 12px;background:#040c1a;border:1px solid var(--brd);
   color:#1a3a55;font-family:'Courier New',monospace;font-size:11px;border-radius:5px;cursor:pointer}
-.leg{display:flex;flex-wrap:wrap;gap:5px;padding:4px 8px;border-top:1px solid var(--brd);flex-shrink:0}
+.leg{display:flex;flex-wrap:wrap;gap:4px;padding:2px 8px;border-top:1px solid var(--brd);flex-shrink:0}
 .li{display:flex;align-items:center;gap:3px;font-size:8px;color:#0d2844}
 .ld{width:9px;height:9px;border-radius:2px;flex-shrink:0}
-.log{max-height:80px;overflow-y:auto;padding:4px 10px;font-size:9px;color:#0d2844;line-height:1.9;-webkit-overflow-scrolling:touch}
+.log{max-height:44px;overflow-y:auto;padding:2px 10px;font-size:9px;color:#0d2844;line-height:1.6;-webkit-overflow-scrolling:touch}
 .log div{border-bottom:1px solid #040c18;padding:1px 0}
 .lh{color:#cc2200}.lm{color:#0033aa}.ln{color:#997700}
 .ls{color:#884400}.lb{color:#330a66}.ly{color:#0d2844}
@@ -137,9 +137,9 @@ select:focus{border-color:var(--green2);box-shadow:0 0 10px #00ff6622}
   color:#1a7a35;font-family:'Courier New',monospace;font-size:11px;cursor:pointer;letter-spacing:1px;flex:1}
 .dir-btn.sel{background:#004422;border-color:#00aa44;color:#00ff66;box-shadow:0 0 6px #00ff6633}
 /* ── SHIP TRACKER ── */
-#tracker{padding:6px 9px;border-top:1px solid var(--brd);flex-shrink:0;background:#020a14}
-.trk-title{font-size:8px;color:#0d2a44;letter-spacing:2px;margin-bottom:5px}
-.trk-row{display:flex;align-items:center;gap:5px;margin-bottom:3px}
+#tracker{padding:3px 9px;border-top:1px solid var(--brd);flex-shrink:0;background:#020a14;max-height:70px;overflow-y:auto}
+.trk-title{font-size:8px;color:#0d2a44;letter-spacing:2px;margin-bottom:2px}
+.trk-row{display:flex;align-items:center;gap:5px;margin-bottom:1px}
 .trk-label{font-size:8px;color:#0d2844;min-width:82px;letter-spacing:.5px}
 .trk-ships{display:flex;gap:2px;flex-wrap:wrap}
 .trk-dot{width:10px;height:10px;border-radius:2px;background:#0d1a30;border:1px solid #0a1a30;flex-shrink:0}
@@ -221,11 +221,11 @@ select:focus{border-color:var(--green2);box-shadow:0 0 10px #00ff6622}
   <div class="cr">
     <div class="cb">
       <div class="cl">&#x2014; &#x412;&#x410;&#x428; &#x424;&#x41B;&#x41E;&#x422; &#x2014;</div>
-      <canvas id="cp" height="480"></canvas>
+      <canvas id="cp" height="210"></canvas>
     </div>
     <div class="cb">
       <div class="cl">&#x2014; &#x41F;&#x420;&#x41E;&#x422;&#x418;&#x412;&#x41D;&#x418;&#x41A; &#x2014;</div>
-      <canvas id="ce" height="480"></canvas>
+      <canvas id="ce" height="210"></canvas>
     </div>
   </div>
   <div class="sb">
@@ -1457,7 +1457,7 @@ loadCount();
 window.addEventListener('resize',()=>{
   if(!R1||!R2) return;
   [['cp',0],['ce',1]].forEach(([id,i])=>{
-    const c=document.getElementById(id); const W=c.parentElement.clientWidth||170; const H=Math.min(W,480);
+    const c=document.getElementById(id); const W=c.parentElement.clientWidth||170; const H=Math.min(W,210);
     const R=i===0?R1:R2, K=i===0?K1:K2;
     R.setSize(W,H); K.aspect=W/H; K.updateProjectionMatrix();
   });
