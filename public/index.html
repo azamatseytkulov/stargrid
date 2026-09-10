@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NJEDRMJGVJ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-NJEDRMJGVJ');
+</script>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>Star Grid</title>
@@ -300,6 +308,9 @@ select:focus{border-color:var(--green2);box-shadow:0 0 10px #00ff6622}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 'use strict';
+
+function gaEvent(name, params){ try{ if(window.gtag) gtag('event', name, params||{}); }catch(e){} }
+
 let G = 10; // dynamic grid size, declared early to avoid TDZ errors
 // \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 // COORDINATE LABELS
@@ -1135,6 +1146,7 @@ function initOnlineGame(){
   showScr('s-battle');
   initThree(); renderP(); renderE();
   enterPlacement();
+  gaEvent('game_start',{mode:'online'});
 }
 
 function cancelOnline(){
@@ -1303,6 +1315,7 @@ function finishPlacement(){
   document.getElementById('scan-btn').textContent='\uD83D\uDD0D \u0421\u041A\u0410\u041D\u0418\u0420\u041E\u0412\u0410\u0422\u042C';
   updateUI(); renderE();
   setMsg('\uD83D\uDE80 \u0411\u043E\u0439 \u043D\u0430\u0447\u0430\u043B\u0441\u044F!','#00cc55');
+  gaEvent('battle_start',{mode:isTut()?'tutorial':'full'});
 }
 
 // GAME FLOW
@@ -1319,6 +1332,7 @@ function startGame(){
   turn='p'; isOver=false; shotCount=0; hitCount=0; bonusShot=superCube;
   showScr('s-battle'); initThree(); renderP(); renderE(); updateUI();
   enterPlacement();
+  gaEvent('game_start',{mode:isTut()?'tutorial':'full',game_number:gameCount+1});
 }
 function replayGame(){ if(adInterval){clearInterval(adInterval);adInterval=null;} startGame(); }
 function goMenu(){ if(raf){cancelAnimationFrame(raf);raf=null;} if(adInterval){clearInterval(adInterval);adInterval=null;} if(onlineMode&&sock){sock.disconnect();sock=null;} onlineMode=false; onlineResultMap={}; showScr('s-menu'); }
@@ -1426,6 +1440,7 @@ function endGame(won){
   isOver=true; if(raf){cancelAnimationFrame(raf);raf=null;} renderE();
   if(won) sndVictory(); else sndDefeat();
   saveCount();
+  gaEvent('game_end',{result:won?'win':'lose',shots:shotCount,mode:isTut()?'tutorial':(onlineMode?'online':'full')});
   const eTot=totalCells(eGrid),pTot=totalCells(pGrid),pH=hitCells(eShots,pGrid);
   const acc=shotCount?Math.round(hitCount/shotCount*100):0;
   document.getElementById('ov-i').textContent=won?'\uD83C\uDFC6':'\uD83D\uDC80';
@@ -1443,12 +1458,14 @@ function endGame(won){
 
 // MONETISATION
 function buySuperCube(){
+  gaEvent('supercube_click',{});
   if(superCube){alert('\u2705 \u0423\u0436\u0435 \u0430\u043A\u0442\u0438\u0432\u0438\u0440\u043E\u0432\u0430\u043D!');return;}
   if(confirm('\uD83D\uDC8E \u0421\u0423\u041F\u0415\u0420-\u041A\u0423\u0411 5\u00B3 \u2014 99 \u20B8')){
     superCube=true;
     const b=document.getElementById('sc-btn');
     b.innerHTML='\uD83D\uDC8E \u0410\u041A\u0422\u0418\u0412\u0415\u041D \u2705';
     b.style.opacity='.4'; b.style.cursor='default';
+    gaEvent('supercube_purchase',{});
     alert('\u2705 \u0410\u043A\u0442\u0438\u0432\u0438\u0440\u043E\u0432\u0430\u043D\u043E!');
   }
 }
