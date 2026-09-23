@@ -84,6 +84,9 @@ body{
 .dir-btn.sel{border-color:var(--green); color:var(--green); background:rgba(0,255,102,.08);}
 #place-note{font-size:10px; color:var(--muted); margin-bottom:4px;}
 .coord-row{display:none;}
+.depth-row{display:none; align-items:center; justify-content:center; gap:10px; background:var(--panel); border:1px solid var(--green-dim); border-radius:6px; padding:6px; margin-bottom:4px; font-size:11px; color:var(--green);}
+.depth-btn{background:none; border:1px solid var(--green-dim); color:var(--green); border-radius:6px; padding:5px 12px; font-size:14px;}
+.depth-btn:active{transform:scale(.9);}
 .act-row{display:flex; gap:6px;}
 .fire,.scan,.xb{flex:1; padding:11px 4px; border-radius:8px; font-size:13px; border:1px solid var(--line); background:var(--panel); color:var(--text); text-align:center;}
 .fire{border-color:#552200; color:#ffaa66;}
@@ -190,8 +193,14 @@ body{
       <select id="sz" onchange="onCoordChange()"></select>
     </div>
 
+    <div class="depth-row" id="depth-row">
+      <button class="depth-btn" onclick="adjustDepth(-1)">◀</button>
+      <span id="depth-label">—</span>
+      <button class="depth-btn" onclick="adjustDepth(1)">▶</button>
+    </div>
+
     <div class="act-row">
-      <button class="fire mode-active" id="fire-btn" onclick="onFireBtn()">⚡<br>ОГОНЬ</button>
+      <button class="fire" id="fire-btn" onclick="onFireBtn()">⚡<br>ОГОНЬ</button>
       <button class="scan" id="scan-btn" onclick="onScanBtn()">🔍<br>СКАН</button>
       <button class="xb" onclick="resetPlacement()" id="cancel-btn" title="Сбросить расстановку">↩</button>
     </div>
@@ -526,8 +535,12 @@ function renderLoop(){ raf=requestAnimationFrame(renderLoop); R1.render(S1,K1); 
 // ═══════════════════════════════════════════
 // DRAG ROTATION + TAP/SWIPE INPUT
 // ═══════════════════════════════════════════
-// Generic raycast: screen point -> grid cell on the near face of the cube
-function hitGridCellGeneric(canvasId, cam, clipMax, clientX, clientY){
+// A 2D tap can only resolve 2 of 3 coordinates unambiguously — the ray
+// behind the tap passes through several grid cells front-to-back ("depth").
+// computeRayCells returns every cell the ray crosses, near-to-far, so the
+// remaining axis can be picked explicitly with a depth stepper instead of
+// silently guessing the nearest face.
+function computeRayCells(canvasId, cam, clientX, clientY){
   const canvas=document.getElementById(canvasId);
   const rect=canvas.getBoundingClientRect();
   const mx=((clientX-rect.left)/canvas.clientWidth)*2-1;
@@ -542,14 +555,19 @@ function hitGridCellGeneric(canvasId, cam, clipMax, clientX, clientY){
     if(t1>t2){const tmp=t1;t1=t2;t2=tmp;}
     tmin=Math.max(tmin,t1); tmax=Math.min(tmax,t2);
   }
-  if(tmax<tmin||tmax<0) return null;
-  const t=tmin>0?tmin:tmax;
-  const cm=Math.max(0,clipMax);
-  return {
-    x:Math.min(cm,Math.min(G-1,Math.max(0,Math.floor(o.x+t*d.x)))),
-    y:Math.min(cm,Math.min(G-1,Math.max(0,Math.floor(o.y+t*d.y)))),
-    z:Math.min(cm,Math.min(G-1,Math.max(0,Math.floor(o.z+t*d.z)))),
-  };
+  if(tmax<tmin||tmax<0) return [];
+  tmin=Math.max(tmin,0);
+  const cells=[], seen=new Set();
+  const steps=Math.max(1,Math.ceil((tmax-tmin)*4))+2;
+  for(let i=0;i<=steps;i++){
+    const t=tmin+(tmax-tmin)*i/steps;
+    const cx=Math.min(G-1,Math.max(0,Math.floor(o.x+t*d.x)));
+    const cy=Math.min(G-1,Math.max(0,Math.floor(o.y+t*d.y)));
+    const cz=Math.min(G-1,Math.max(0,Math.floor(o.z+t*d.z)));
+    const k=cx+','+cy+','+cz;
+    if(!seen.has(k)){ seen.add(k); cells.push({x:cx,y:cy,z:cz}); }
+  }
+  return cells;
 }
 
 // Project the three world axes from a grid cell into screen space and pick
@@ -574,48 +592,79 @@ function pickAxisFromDrag(canvasId, cam, cell, dx, dy){
 
 const TAP_EPS=10, SWIPE_MAX=90;
 
-// Tap or short swipe on OWN cube during placement: tap = place at cell
-// (current direction); short swipe = also pick direction from the swipe.
+// ── Placement targeting (own cube) ──
+let placeRayCells=[], placeDepthIdx=0;
+function clearPlaceTarget(){ placeRayCells=[]; placeDepthIdx=0; const r=document.getElementById('depth-row'); if(r) r.style.display='none'; }
+function syncPlaceDepth(){
+  if(!placeRayCells.length) return;
+  placeDepthIdx=Math.max(0,Math.min(placeRayCells.length-1,placeDepthIdx));
+  const c=placeRayCells[placeDepthIdx];
+  document.getElementById('sx').value=c.x;
+  document.getElementById('sy').value=c.y;
+  document.getElementById('sz').value=c.z;
+  const row=document.getElementById('depth-row');
+  if(row){
+    row.style.display='flex';
+    document.getElementById('depth-label').textContent='Глубина '+(placeDepthIdx+1)+'/'+placeRayCells.length+' · '+cStr(c.x,c.y,c.z);
+  }
+  renderP();
+}
+// Tap picks the ray (defaults to the nearest cell); a short swipe also
+// picks ship direction. Placement is NOT auto-confirmed — the depth is
+// ambiguous from one 2D tap, so the player checks/adjusts it, then presses
+// ПОСТАВИТЬ. This is one extra tap versus a single-gesture place, but a
+// single tap genuinely cannot specify all 3 coordinates in a 3D cube.
 function handlePlacementRelease(downX,downY,upX,upY){
   if(!inPlacement||selSize<=0||toPlace.length===0) return;
   const dx=upX-downX, dy=upY-downY;
   const dist=Math.sqrt(dx*dx+dy*dy);
   if(dist>SWIPE_MAX) return; // big drag = the player was rotating the view
-  const cell=hitGridCellGeneric('cp',K1,G-selSize,downX,downY);
-  if(!cell) return;
+  const cells=computeRayCells('cp',K1,downX,downY);
+  if(!cells.length) return;
+  placeRayCells=cells; placeDepthIdx=0;
   if(dist>=TAP_EPS){
-    const axis=pickAxisFromDrag('cp',K1,cell,dx,dy);
+    const axis=pickAxisFromDrag('cp',K1,cells[0],dx,dy);
     setDir(axis);
   }
-  document.getElementById('sx').value=cell.x;
-  document.getElementById('sy').value=cell.y;
-  document.getElementById('sz').value=cell.z;
-  renderP();
-  placeAtCoords();
+  syncPlaceDepth();
 }
 
-// Tap on ENEMY cube during battle: fires (or scans, if scan mode is on)
-// at the tapped cell — no coordinate lists needed.
-let battleMode='fire';
-function setBattleMode(m){
-  battleMode=m;
-  const fb=document.getElementById('fire-btn'), sb=document.getElementById('scan-btn');
-  if(fb) fb.classList.toggle('mode-active', m==='fire');
-  if(sb) sb.classList.toggle('mode-active', m==='scan');
+// ── Battle targeting (enemy cube) ──
+let targetRayCells=[], targetDepthIdx=0;
+function clearTargetPick(){ targetRayCells=[]; targetDepthIdx=0; const r=document.getElementById('depth-row'); if(r) r.style.display='none'; }
+function syncTargetDepth(){
+  if(!targetRayCells.length) return;
+  targetDepthIdx=Math.max(0,Math.min(targetRayCells.length-1,targetDepthIdx));
+  const c=targetRayCells[targetDepthIdx];
+  document.getElementById('sx').value=c.x;
+  document.getElementById('sy').value=c.y;
+  document.getElementById('sz').value=c.z;
+  const row=document.getElementById('depth-row');
+  if(row){
+    row.style.display='flex';
+    document.getElementById('depth-label').textContent='Глубина '+(targetDepthIdx+1)+'/'+targetRayCells.length+' · '+cStr(c.x,c.y,c.z);
+  }
+  renderE();
 }
-function onFireBtn(){ if(inPlacement){ placeAtCoords(); } else { setBattleMode('fire'); } }
-function onScanBtn(){ if(inPlacement){ autoPlaceRemaining(); } else { setBattleMode('scan'); } }
+// Depth stepper: works for whichever panel is currently showing (placement vs battle).
+function adjustDepth(d){
+  if(inPlacement){ placeDepthIdx+=d; syncPlaceDepth(); }
+  else{ targetDepthIdx+=d; syncTargetDepth(); }
+}
+// Tap on enemy cube just PICKS the target (nearest cell by default) and shows
+// the depth stepper — it no longer fires immediately, for the same reason
+// placement no longer auto-confirms: one tap can't disambiguate depth, and
+// an accidental tap should never waste a real shot.
 function handleTargetTap(clientX,clientY){
   if(inPlacement||isOver) return;
   if(onlineMode){ if(!onlineTurn) return; } else if(turn!=='p'){ return; }
-  const cell=hitGridCellGeneric('ce',K2,G-1,clientX,clientY);
-  if(!cell) return;
-  document.getElementById('sx').value=cell.x;
-  document.getElementById('sy').value=cell.y;
-  document.getElementById('sz').value=cell.z;
-  renderE();
-  if(battleMode==='scan') playerScan(); else playerShoot();
+  const cells=computeRayCells('ce',K2,clientX,clientY);
+  if(!cells.length) return;
+  targetRayCells=cells; targetDepthIdx=0;
+  syncTargetDepth();
 }
+function onFireBtn(){ if(inPlacement){ placeAtCoords(); } else { playerShoot(); } }
+function onScanBtn(){ if(inPlacement){ autoPlaceRemaining(); } else { playerScan(); } }
 
 function bindDrag(idx){
   const canvas=document.getElementById(idx===0?'cp':'ce');
@@ -962,10 +1011,10 @@ const TUT = [
    body:'Три оси. X = буква (A–E). Y = число (1–5). Z = римская (V–I). Каждая точка в пространстве — это три координаты. Куб можно вращать пальцем.'},
   {icon:'⚓',
    title:'РАССТАНОВКА ФЛОТА',
-   body:'Выбери тип корабля ниже. Тапни по своему кубу (левый) — корабль встанет туда. Хочешь развернуть его — тапни и коротко свайпни в сторону, вдоль нужной оси. Или жми 🎲 АВТО — расставит всё сама.'},
+   body:'Выбери тип корабля ниже. Тапни по своему кубу (левый) — появится стрелка ◀ Глубина ▶: тап целится по двум осям сразу, а глубину (третью ось, "вглубь" экрана) выбери стрелками. Свайп при тапе задаёт направление корабля. Готово — жми 📍 ПОСТАВИТЬ. Или жми 🎲 АВТО — расставит всё сама.'},
   {icon:'🎯',
    title:'КАК АТАКОВАТЬ',
-   body:'Просто тапни по клетке на вражеском кубе (правый) — это и есть выстрел. 🔴 Красный = попадание, стреляй ещё! 🟡 Жёлтый = рядом с кораблём. ⚪ Белый = промах. Кнопка СКАН переключает в режим сканирования.'},
+   body:'Тапни по клетке на вражеском кубе (правый) — выбери глубину стрелками ◀ ▶, если нужно, затем жми ⚡ ОГОНЬ. 🔴 Красный = попадание, стреляй ещё! 🟡 Жёлтый = рядом с кораблём. ⚪ Белый = промах. 🔍 СКАН — сканирует выбранную клетку.'},
   {icon:'🛡',
    title:'ЗОНА БЕЗОПАСНОСТИ',
    body:'Когда корабль потоплен полностью — вокруг него светлеет зона. Кораблей там нет по правилам игры — туда можно не стрелять.'},
@@ -1206,12 +1255,13 @@ function enterPlacement(){
   document.querySelector('.coord-row').style.display='none';
   toPlace=[...getFlatFleet()]; placeId=1;
   selSize=toPlace[0];
+  clearPlaceTarget();
   document.getElementById('place-ui').style.display='block';
   document.getElementById('fire-btn').textContent='📍 ПОСТАВИТЬ';
   document.getElementById('scan-btn').textContent='🎲 АВТО (все оставшиеся)';
   document.getElementById('ready-btn').style.display='none';
   updateChips();
-  setMsg('🚀 Выберите тип корабля и тапните по кубу — свайп задаёт направление.','#00aa44');
+  setMsg('🚀 Тапните по кубу, уточните глубину стрелками и нажмите ПОСТАВИТЬ.','#00aa44');
 }
 
 function updateChips(){
@@ -1237,11 +1287,15 @@ function placeAtCoords(){
   if(!selSize||toPlace.indexOf(selSize)===-1){
     setMsg('⚠️ Выберите тип корабля','#886600'); return;
   }
+  if(!placeRayCells.length){
+    setMsg('⚠️ Сначала тапните по своему кубу, чтобы выбрать клетку','#886600'); return;
+  }
   const [x,y,z]=getXYZ();
   if(!canPlaceLinear(pGrid,x,y,z,selSize,placeDir)){
     setMsg('❌ Нельзя — за границей или касается другого корабля','#cc2200'); return;
   }
   placeLinear(pGrid,x,y,z,selSize,placeDir,placeId++);
+  clearPlaceTarget();
   const idx=toPlace.indexOf(selSize); toPlace.splice(idx,1);
   if(toPlace.length>0){
     selSize=toPlace.includes(selSize)?selSize:toPlace[0];
@@ -1276,6 +1330,7 @@ function autoPlaceRemaining(){
     }
   }
   toPlace=[]; selSize=0;
+  clearPlaceTarget();
   updateChips(); renderP();
   document.getElementById('ready-btn').style.display='inline-block';
   setMsg('🎲 Авторасстановка завершена! Нажмите НАЧАТЬ БОЙ','#00ff66');
@@ -1283,6 +1338,7 @@ function autoPlaceRemaining(){
 
 function resetPlacement(){
   pGrid=mk3(); toPlace=[...getFlatFleet()]; placeId=1; selSize=toPlace[0];
+  clearPlaceTarget();
   updateChips(); renderP();
   document.getElementById('ready-btn').style.display='none';
   setMsg('↩ Сброшено. Расставьте заново.','#886600');
@@ -1290,12 +1346,12 @@ function resetPlacement(){
 
 function finishPlacement(){
   inPlacement=false;
+  clearPlaceTarget();
   if(isTut()) setTimeout(()=>showTut([TUT[3]]),400);
   if(onlineMode){
     document.getElementById('place-ui').style.display='none';
     document.getElementById('fire-btn').innerHTML='⚡<br>ОГОНЬ';
     document.getElementById('scan-btn').innerHTML='🔍<br>СКАН';
-    setBattleMode('fire');
     sock.emit('placement_ready');
     setMsg('⌛ Флот расставлен. Ждём соперника...','#4488ff');
     document.getElementById('fire-btn').disabled=true;
@@ -1305,9 +1361,8 @@ function finishPlacement(){
   document.getElementById('place-ui').style.display='none';
   document.getElementById('fire-btn').innerHTML='⚡<br>ОГОНЬ';
   document.getElementById('scan-btn').innerHTML='🔍<br>СКАН';
-  setBattleMode('fire');
   updateUI(); renderE();
-  setMsg('🚀 Бой начался! Тапните по вражескому кубу, чтобы стрелять.','#00cc55');
+  setMsg('🚀 Бой начался! Тапните по вражескому кубу, чтобы выбрать цель, затем нажмите ОГОНЬ.','#00cc55');
 }
 
 // ═══════════════════════════════════════════
@@ -1357,8 +1412,10 @@ function onCoordChange(){ if(!document.getElementById('s-battle').classList.cont
 function playerShoot(){
   if(inPlacement){placeAtCoords();return;}
   if(turn!=='p'||isOver) return;
+  if(!targetRayCells.length){ setMsg('⚠️ Сначала тапните по вражескому кубу, чтобы выбрать цель','#886600'); return; }
   const [x,y,z]=getXYZ(), k=x+','+y+','+z;
   if(pShots.has(k)){ setMsg('⚠️ '+cStr(x,y,z)+' — уже стреляли!','#886600'); return; }
+  clearTargetPick();
   sndLaser();
   if(onlineMode){
     // Online: send to server, wait for result
@@ -1393,6 +1450,8 @@ function playerShoot(){
 function playerScan(){
   if(inPlacement){autoPlaceRemaining();return;}
   if(turn!=='p'||isOver) return;
+  if(!targetRayCells.length){ setMsg('⚠️ Сначала тапните по вражескому кубу, чтобы выбрать клетку','#886600'); return; }
+  clearTargetPick();
   const [x,y,z]=getXYZ(), cells=[[x,y,z]];
   const adj=face6(x,y,z).filter(([ax,ay,az])=>!pShots.has(ax+','+ay+','+az));
   if(adj.length) cells.push(adj[0|Math.random()*adj.length]);
