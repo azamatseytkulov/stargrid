@@ -55,7 +55,11 @@ body{
 .snd-btn,.back-btn{background:none; border:1px solid var(--line); color:var(--text); border-radius:8px; padding:5px 9px; font-size:14px;}
 .snd-btn.off{opacity:.4;}
 .cr{display:flex; flex-direction:row; gap:6px; margin-bottom:4px;}
-.cb{flex:1; min-width:0; display:flex; flex-direction:column; align-items:center;}
+.cb{flex:1; min-width:0; display:flex; flex-direction:column; align-items:center; transition:flex .35s ease;}
+.cb.cb-active{flex:2;}
+.cb.cb-inactive{flex:.5;}
+.cb.cb-active .cl{color:var(--green);}
+.cb.cb-inactive canvas{opacity:.55;}
 .cb canvas{width:100%; max-width:100%; height:auto; aspect-ratio:1/1; border:1px solid var(--line); border-radius:8px; background:#010818;}
 .cl{font-size:10px; color:var(--muted); letter-spacing:1px; margin-top:2px;}
 .sb{display:flex; justify-content:space-between; gap:4px; margin:4px 0;}
@@ -463,7 +467,7 @@ function addAxisLabels(scene){
   }
 
   // Z axis (reversed: X at z=0) — near: x=-O y=-O  |  far: x=N+O y=N+O
-  [...ROM].reverse().forEach((lbl,i)=>{
+  [...ROM].reverse().slice(0,G).forEach((lbl,i)=>{
     [[-O,-O],[N+O,N+O]].forEach(([xO,yO])=>{
       const s=makeSprite(lbl,0xaaff22); s.position.set(xO,yO,i+0.5); scene.add(s);
     });
@@ -521,6 +525,20 @@ function addVox(scene,vl,x,y,z,color,opacity,sz){
 }
 function clearVox(vl){ vl.forEach(v=>{v.scene.remove(v.m);v.scene.remove(v.el);}); vl.length=0; }
 
+// Whichever cube the player is currently tapping/dragging gets shown ~2x
+// bigger, the other ~2x smaller — active field is easier to read, inactive
+// one doesn't compete for attention.
+let activeCube=0;
+function setActiveCube(idx){
+  if(activeCube===idx) return;
+  activeCube=idx;
+  const boxes=document.querySelectorAll('.cr .cb');
+  boxes.forEach((el,i)=>{
+    el.classList.toggle('cb-active', i===idx);
+    el.classList.toggle('cb-inactive', i!==idx);
+  });
+}
+
 function initThree(){
   if(raf){cancelAnimationFrame(raf);raf=null;}
   const p=mkRenderer('cp'); R1=p.rend; S1=p.scene; K1=p.cam;
@@ -528,6 +546,7 @@ function initThree(){
   buildGrid(S1); buildGrid(S2);
   clearVox(V1); clearVox(V2);
   bindDrag(0); bindDrag(1);
+  activeCube=-1; setActiveCube(0); // start focused on own fleet (placement)
   renderLoop();
 }
 function renderLoop(){ raf=requestAnimationFrame(renderLoop); R1.render(S1,K1); R2.render(S2,K2); }
@@ -689,12 +708,12 @@ function bindDrag(idx){
     active=false;
   };
   // Mouse
-  canvas.addEventListener('mousedown',e=>{active=true;lx=sx0=e.clientX;ly=sy0=e.clientY;moved=false;e.preventDefault();});
+  canvas.addEventListener('mousedown',e=>{active=true;lx=sx0=e.clientX;ly=sy0=e.clientY;moved=false;setActiveCube(idx);e.preventDefault();});
   window.addEventListener('mousemove',e=>{ if(active) move(e.clientX,e.clientY); });
   window.addEventListener('mouseup',e=>{ if(active) release(e.clientX,e.clientY); });
   // Touch
   canvas.addEventListener('touchstart',e=>{
-    if(e.touches.length===1){active=true;lx=sx0=e.touches[0].clientX;ly=sy0=e.touches[0].clientY;moved=false;e.preventDefault();}
+    if(e.touches.length===1){active=true;lx=sx0=e.touches[0].clientX;ly=sy0=e.touches[0].clientY;moved=false;setActiveCube(idx);e.preventDefault();}
   },{passive:false});
   canvas.addEventListener('touchmove',e=>{
     if(active&&e.touches.length===1){move(e.touches[0].clientX,e.touches[0].clientY);e.preventDefault();}
@@ -943,7 +962,7 @@ window.addEventListener('pointerdown', ()=>{ if(!bgMusicOn) startBgMusic(); }, {
 // GAME COUNT + TUTORIAL MODE
 // ══════════════════════════════════════════════════════
 let gameCount = 0;
-const TUTORIAL_GAMES = 10;
+const TUTORIAL_GAMES = 5;
 const TUTORIAL_G = 5;
 const TUTORIAL_SHIP_TYPES = [
   {size:4, count:1, name:'Флагман'},
@@ -1005,7 +1024,7 @@ function rebuildSelects(){
 const TUT = [
   {icon:'⚙',
    title:'ДОБРО ПОЖАЛОВАТЬ В STAR GRID',
-   body:'Обучение: куб 5×5×5, 6 кораблей. Полный режим откроется после 10 игр. Твоя цель — уничтожить все корабли противника в трёхмерном пространстве.'},
+   body:'Обучение: куб 5×5×5, 6 кораблей. Полный режим откроется после 5 игр. Твоя цель — уничтожить все корабли противника в трёхмерном пространстве.'},
   {icon:'🗺',
    title:'КАК УСТРОЕН КУБ',
    body:'Три оси. X = буква (A–E). Y = число (1–5). Z = римская (V–I). Каждая точка в пространстве — это три координаты. Куб можно вращать пальцем.'},
@@ -1347,6 +1366,7 @@ function resetPlacement(){
 function finishPlacement(){
   inPlacement=false;
   clearPlaceTarget();
+  activeCube=-1; setActiveCube(1); // focus moves to the enemy cube for battle
   if(isTut()) setTimeout(()=>showTut([TUT[3]]),400);
   if(onlineMode){
     document.getElementById('place-ui').style.display='none';
@@ -1533,14 +1553,29 @@ function buySuperCube(){
 }
 
 loadCount();
-window.addEventListener('resize',()=>{
+function resizeCubeCanvas(i){
   if(!R1||!R2) return;
-  [['cp',0],['ce',1]].forEach(([id,i])=>{
-    const c=document.getElementById(id); const W=c.parentElement.clientWidth||170; const H=Math.min(W,380);
-    const R=i===0?R1:R2, K=i===0?K1:K2;
-    R.setSize(W,H); K.aspect=W/H; K.updateProjectionMatrix();
+  const id=i===0?'cp':'ce';
+  const c=document.getElementById(id); if(!c) return;
+  const W=c.parentElement.clientWidth||170; const H=Math.min(W,380);
+  const R=i===0?R1:R2, K=i===0?K1:K2;
+  R.setSize(W,H); K.aspect=W/H; K.updateProjectionMatrix();
+}
+window.addEventListener('resize',()=>{ resizeCubeCanvas(0); resizeCubeCanvas(1); });
+// The active/inactive cube swap changes each box's actual pixel size (CSS flex),
+// so keep the renderer's internal resolution in sync with it via ResizeObserver
+// (fires on the CSS transition too, not just on window resize).
+if(window.ResizeObserver){
+  ['cp','ce'].forEach((id,i)=>{
+    const box=document.querySelector('.cr .cb:nth-child('+(i+1)+')');
+    if(!box) return;
+    let raf=null;
+    new ResizeObserver(()=>{
+      if(raf) cancelAnimationFrame(raf);
+      raf=requestAnimationFrame(()=>resizeCubeCanvas(i));
+    }).observe(box);
   });
-});
+}
 </script>
 </body>
 </html>
