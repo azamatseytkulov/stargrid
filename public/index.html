@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#020210">
+<title>STAR GRID</title>
+<link rel="manifest" href="manifest.json">
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-NJEDRMJGVJ"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -8,316 +13,244 @@
   gtag('js', new Date());
   gtag('config', 'G-NJEDRMJGVJ');
 </script>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Star Grid</title>
-<meta name="theme-color" content="#020210">
-<meta name="description" content="3D Space Battleship — Star Grid">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="manifest" href="manifest.json">
 <style>
 :root{
-  --bg:#060c22;--surf:#0a1230;--brd:#0d2040;--brd2:#1a3a60;
-  --green:#00ff66;--green2:#00aa44;--green3:#004422;
-  --red:#ff2200;--blue:#0055cc;--yellow:#ffaa00;--orange:#ff6600;
-  --text:#88ccff;--texthi:#cceeff;--dim:#0a1828;
+  --bg:#020210; --panel:#050a1c; --line:#0d2a44;
+  --green:#00ff66; --green-dim:#00aa44; --text:#cfe8ff; --muted:#5f7ea3;
+  --red:#ff2200; --yellow:#ffaa00;
 }
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{background:var(--bg);color:var(--text);font-family:'Courier New',monospace;height:100%;height:100dvh;overflow:hidden}
-#stars{position:fixed;inset:0;pointer-events:none;z-index:0;
-  background:
-    radial-gradient(1px 1px at 5%  8%,#ffffff22 0%,transparent 100%),
-    radial-gradient(1px 1px at 18% 30%,#ffffff1a 0%,transparent 100%),
-    radial-gradient(1px 1px at 40%  5%,#ffffff22 0%,transparent 100%),
-    radial-gradient(2px 2px at 55% 45%,#ffffff18 0%,transparent 100%),
-    radial-gradient(1px 1px at 70% 20%,#ffffff20 0%,transparent 100%),
-    radial-gradient(1px 1px at 82% 60%,#ffffff18 0%,transparent 100%),
-    radial-gradient(1px 1px at 92% 35%,#ffffff1c 0%,transparent 100%),
-    radial-gradient(1px 1px at 28% 72%,#ffffff16 0%,transparent 100%),
-    radial-gradient(1px 1px at 62% 85%,#ffffff18 0%,transparent 100%),
-    radial-gradient(2px 2px at  3% 55%,#00ff6612 0%,transparent 100%),
-    radial-gradient(2px 2px at 90%  6%,#00ff6610 0%,transparent 100%);}
-.scr{display:none;position:fixed;inset:0;height:100dvh;flex-direction:column;align-items:center;z-index:1}
-.scr.on{display:flex}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+html,body{height:100%; margin:0;}
+body{
+  background:var(--bg); color:var(--text);
+  font-family:"Courier New",monospace;
+  min-height:100dvh; overflow-x:hidden;
+  display:flex; flex-direction:column;
+}
+.scr{display:none; flex-direction:column; min-height:100dvh; padding:10px 12px calc(10px + env(safe-area-inset-bottom));}
+.scr.on{display:flex;}
 
-/* MENU */
-#s-menu{justify-content:center;padding:20px;gap:14px;text-align:center}
-.logo{font-size:72px;filter:drop-shadow(0 0 30px #cc8800) drop-shadow(0 0 12px #ffaa22);animation:glow 3s ease-in-out infinite}
-@keyframes glow{0%,100%{filter:drop-shadow(0 0 30px #cc8800) drop-shadow(0 0 10px #ff9900)}50%{filter:drop-shadow(0 0 50px #ffbb00) drop-shadow(0 0 20px #cc6600)}}
-.m-title{font-size:26px;letter-spacing:6px;color:#fff;text-shadow:0 0 20px #cc8800,0 0 40px #ff990055;margin-bottom:2px}
-.m-sub{font-size:10px;letter-spacing:5px;color:#0d2a44;margin-bottom:20px}
-.m-btn{width:240px;padding:14px;border-radius:8px;border:1px solid var(--green2);
-  background:#030a18;color:var(--green);font-family:'Courier New',monospace;
-  font-size:14px;letter-spacing:2px;cursor:pointer;transition:all .18s}
-.m-btn:active{background:var(--green3);box-shadow:0 0 20px #00ff6644}
-.m-btn.gold{border-color:#664400;color:#ddaa22;background:#0a0600}
-.m-btn.dim2{opacity:.3;cursor:default}
-.sc-note{font-size:9px;color:#442200;margin-top:3px;letter-spacing:1px}
+/* ── MENU ── */
+#s-menu{align-items:center; justify-content:center; text-align:center; gap:14px;}
+.logo{font-size:46px;}
+.title{font-size:26px; letter-spacing:4px; color:var(--green); text-shadow:0 0 12px rgba(0,255,102,.5);}
+.subtitle{color:var(--muted); font-size:12px; letter-spacing:2px;}
+.m-btn{
+  width:min(260px,80vw); padding:13px 10px; margin:5px 0; font-size:15px;
+  background:linear-gradient(180deg,#08183a,#040c22); color:var(--text);
+  border:1px solid var(--line); border-radius:10px; letter-spacing:1px;
+  cursor:pointer;
+}
+.m-btn.primary{border-color:var(--green); color:var(--green); box-shadow:0 0 14px rgba(0,255,102,.15);}
+.m-btn:active{transform:scale(.97);}
+#tut-progress{width:min(260px,80vw); margin-top:8px;}
+.tut-bar{height:6px; background:#0a1830; border-radius:4px; overflow:hidden;}
+#tut-fill{height:100%; width:0%; background:var(--green); transition:width .3s;}
+#tut-note{font-size:11px; color:var(--muted); margin-top:4px;}
 
-/* BATTLE */
-#s-battle{justify-content:flex-start;padding:0;height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch}
-.bh{display:flex;justify-content:space-between;align-items:center;
-  padding:5px 12px;background:#020a18;border-bottom:1px solid var(--brd);flex-shrink:0}
-.bh-t{font-size:9px;letter-spacing:3px;color:#0d2844}
-.turn-b{font-size:11px;padding:4px 12px;border-radius:12px;letter-spacing:1px;font-weight:bold;transition:all .3s}
-.tp{color:#00ff66;background:#001208;border:1px solid #005522;text-shadow:0 0 8px #00ff6666}
-.te{color:#ff3322;background:#120004;border:1px solid #550010;text-shadow:0 0 8px #ff222266}
-.cr{display:flex;flex-direction:row;gap:5px;padding:4px 5px 2px;flex-shrink:0}
-.cb{flex:1;min-width:0}
-.cl{font-size:8px;color:#0d2844;letter-spacing:1px;text-align:center;margin-bottom:1px}
-canvas{display:block;width:100%!important;height:auto!important;
-  border-radius:5px;border:1px solid #0a1a30;cursor:grab;touch-action:none}
-canvas:active{cursor:grabbing}
+/* ── BATTLE ── */
+#s-battle{padding-top:6px;}
+.bh{display:flex; align-items:center; justify-content:space-between; margin-bottom:4px;}
+.bh-title{color:var(--green); font-size:14px; letter-spacing:2px;}
+.snd-btn,.back-btn{background:none; border:1px solid var(--line); color:var(--text); border-radius:8px; padding:5px 9px; font-size:14px;}
+.snd-btn.off{opacity:.4;}
+.cr{display:flex; flex-direction:row; gap:6px; margin-bottom:4px;}
+.cb{flex:1; min-width:0; display:flex; flex-direction:column; align-items:center;}
+.cb canvas{width:100%; max-width:100%; height:auto; aspect-ratio:1/1; border:1px solid var(--line); border-radius:8px; background:#010818;}
+.cl{font-size:10px; color:var(--muted); letter-spacing:1px; margin-top:2px;}
+.sb{display:flex; justify-content:space-between; gap:4px; margin:4px 0;}
+.sv{flex:1; text-align:center; background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:3px 2px;}
+.sv b{display:block; font-size:13px; color:var(--green);}
+.sv span{font-size:9px; color:var(--muted);}
+.turn-b{display:inline-block; margin:3px auto; padding:3px 10px; border-radius:6px; font-size:11px; letter-spacing:1px;}
+.turn-b.tp{background:rgba(0,255,102,.12); color:var(--green);}
+.turn-b.te{background:rgba(255,34,0,.12); color:var(--red);}
+#tracker{background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:4px 6px; margin:3px 0; font-size:10px; max-height:74px; overflow-y:auto;}
+.trk-row{display:flex; align-items:center; gap:4px; margin:1px 0;}
+.trk-label{color:var(--muted); min-width:64px; font-size:9px;}
+.trk-ships{display:flex; gap:3px; flex-wrap:wrap;}
+.trk-dot{width:9px; height:9px; border-radius:2px; background:#123; border:1px solid var(--line);}
+.trk-dot.td-hit{background:var(--yellow); border-color:var(--yellow);}
+.trk-dot.td-sunk{background:var(--red); border-color:var(--red);}
+#trk-sum{font-size:9px; color:var(--muted); margin-top:2px;}
+#msg{min-height:30px; font-size:12px; padding:4px 6px; background:var(--panel); border:1px solid var(--line); border-radius:6px; margin:3px 0;}
+.ctrl{display:flex; flex-direction:column; gap:4px; margin:3px 0;}
+#place-ui{display:none;}
+.chips-row{display:flex; flex-wrap:wrap; gap:4px; margin-bottom:4px;}
+.chip{background:var(--panel); border:1px solid var(--line); color:var(--text); border-radius:14px; padding:4px 10px; font-size:11px;}
+.chip.active{border-color:var(--green); color:var(--green);}
+.dir-row{display:flex; gap:4px; margin-bottom:4px;}
+.dir-btn{flex:1; background:var(--panel); border:1px solid var(--line); color:var(--text); border-radius:6px; padding:6px 2px; font-size:11px;}
+.dir-btn.sel{border-color:var(--green); color:var(--green); background:rgba(0,255,102,.08);}
+#place-note{font-size:10px; color:var(--muted); margin-bottom:4px;}
+.coord-row{display:none;}
+.act-row{display:flex; gap:6px;}
+.fire,.scan,.xb{flex:1; padding:11px 4px; border-radius:8px; font-size:13px; border:1px solid var(--line); background:var(--panel); color:var(--text); text-align:center;}
+.fire{border-color:#552200; color:#ffaa66;}
+.fire.mode-active{border-color:var(--red); color:var(--red); box-shadow:0 0 10px rgba(255,34,0,.25);}
+.scan{border-color:#224455;}
+.scan.mode-active{border-color:#3399ff; color:#3399ff; box-shadow:0 0 10px rgba(51,153,255,.25);}
+.fire:disabled,.scan:disabled{opacity:.35;}
+.xb{flex:0 0 auto; padding:11px 12px;}
+#ready-btn{display:none; margin-top:4px; padding:10px; border-radius:8px; border:1px solid var(--green); color:var(--green); background:rgba(0,255,102,.08); font-size:13px;}
+.leg{display:flex; flex-wrap:wrap; gap:6px; font-size:9px; color:var(--muted); margin:3px 0;}
+.li{display:flex; align-items:center; gap:3px;}
+.ld{width:8px; height:8px; border-radius:2px; display:inline-block;}
+.log{font-size:10px; color:var(--muted); max-height:70px; overflow-y:auto; background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:4px 6px;}
+.log div{padding:1px 0; border-bottom:1px solid rgba(255,255,255,.04);}
+.log .lh{color:var(--red);} .log .ln{color:var(--yellow);} .log .lm{color:#3399ff;} .log .lb{color:#ff8844;} .log .ls{color:#cc8844;}
 
-.sb{display:flex;gap:4px;padding:4px 6px;flex-shrink:0;border-top:1px solid var(--brd)}
-.sv{flex:1;background:#040c20;border:1px solid var(--brd);border-radius:6px;padding:3px 4px;text-align:center}
-.sl{font-size:7px;color:#0d2844;letter-spacing:1px}
-.sn{font-size:16px;color:var(--text);margin-top:1px;font-weight:bold}
-.mb{padding:5px 10px;background:#030c1e;border-top:1px solid var(--brd);
-  font-size:11px;min-height:20px;text-align:center;flex-shrink:0;letter-spacing:.3px;line-height:1.3;transition:color .25s}
-.ctrl{padding:5px 8px 4px;border-top:1px solid var(--brd);flex-shrink:0;background:#020a18}
-.ctrl-lbl{font-size:9px;color:#0d2844;letter-spacing:2px;margin-bottom:5px}
-.coord-row{display:flex;gap:5px;align-items:stretch;margin-bottom:7px}
-.cf{flex:1;display:flex;flex-direction:column;gap:3px}
-.cf label{font-size:9px;color:#0d2844;text-align:center;letter-spacing:1px}
-select{background:#030d20;border:2px solid var(--brd2);border-radius:7px;
-  color:var(--green);font-size:19px;font-family:'Courier New',monospace;
-  text-align:center;padding:6px 2px;width:100%;outline:none;
-  -webkit-appearance:none;appearance:none;cursor:pointer}
-select:focus{border-color:var(--green2);box-shadow:0 0 10px #00ff6622}
-.fire{flex-shrink:0;padding:10px 14px;background:#030d20;border:2px solid #1a5a22;
-  color:var(--green);font-family:'Courier New',monospace;font-size:12px;
-  letter-spacing:1px;border-radius:6px;cursor:pointer;line-height:1.5;text-shadow:0 0 8px #00ff6644}
-.fire:active{background:var(--green3);box-shadow:0 0 16px #00ff6633}
-.fire:disabled{opacity:.3;cursor:default}
-.br{display:flex;gap:5px}
-.scan{flex:1;padding:10px 8px;background:#040c1a;border:1px solid #0a2a18;
-  color:#1a9940;font-family:'Courier New',monospace;font-size:9px;letter-spacing:1px;border-radius:5px;cursor:pointer}
-.scan:active{background:#062010;color:var(--green)}
-.scan:disabled{opacity:.3;cursor:default}
-.xb{padding:7px 12px;background:#040c1a;border:1px solid var(--brd);
-  color:#1a3a55;font-family:'Courier New',monospace;font-size:11px;border-radius:5px;cursor:pointer}
-.leg{display:flex;flex-wrap:wrap;gap:4px;padding:2px 8px;border-top:1px solid var(--brd);flex-shrink:0}
-.li{display:flex;align-items:center;gap:3px;font-size:8px;color:#0d2844}
-.ld{width:9px;height:9px;border-radius:2px;flex-shrink:0}
-.log{max-height:44px;overflow-y:auto;padding:2px 10px;font-size:9px;color:#0d2844;line-height:1.6;-webkit-overflow-scrolling:touch}
-.log div{border-bottom:1px solid #040c18;padding:1px 0}
-.lh{color:#cc2200}.lm{color:#0033aa}.ln{color:#997700}
-.ls{color:#884400}.lb{color:#330a66}.ly{color:#0d2844}
-
-/* GAME OVER */
-#s-over{justify-content:center;gap:13px;text-align:center;padding:20px}
-.oi{font-size:76px}
-.ot{font-size:24px;letter-spacing:5px;font-weight:bold}
-.os{font-size:12px;color:#1a3a55;line-height:2.6}
-.adbox{width:100%;max-width:300px;padding:14px;border:1px dashed #1a2a4a;border-radius:8px;background:#030c18}
-.adin{background:#040a14;border-radius:5px;padding:18px;margin-bottom:10px;font-size:8px;color:#0a1020;letter-spacing:1px;line-height:2.2}
-.adct{font-size:28px;color:#331a00}
-.o-btn{width:220px;padding:13px;border-radius:7px;font-family:'Courier New',monospace;font-size:14px;letter-spacing:2px;cursor:pointer;transition:all .18s}
-.o-win{border:1px solid var(--green2);background:#030a10;color:var(--green)}
-.o-def{border:1px solid var(--brd2);background:#030a18;color:var(--text)}
-
-/* ── PLACEMENT PANEL ── */
-#place-ui{padding:8px 9px;border-top:2px solid #005522;flex-shrink:0;background:#020d10}
-.place-hdr{font-size:10px;color:#00aa44;letter-spacing:3px;margin-bottom:6px}
-.ship-chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
-.chip{padding:5px 12px;border-radius:5px;border:1px solid #0a3018;background:#030e08;
-  color:#1a9940;font-family:'Courier New',monospace;font-size:11px;cursor:pointer;letter-spacing:1px}
-.chip.active{background:#004422;border-color:#00aa44;color:#00ff66;
-  box-shadow:0 0 8px #00ff6633}
-.chip.done{opacity:.35;cursor:default}
-.place-btns{display:flex;gap:5px;flex-wrap:wrap}
-.pb{padding:6px 10px;border-radius:5px;font-family:'Courier New',monospace;font-size:10px;
-  letter-spacing:1px;cursor:pointer;border:1px solid #0a3018;background:#030e08;color:#1a9940}
-.pb:active{background:#004422;color:#00ff66}
-.pb.ready{border-color:#00aa44;color:#00ff66;background:#002208}
-.pb:disabled{opacity:.3;cursor:default}
-.place-note{font-size:9px;color:#0d2844;margin-top:5px;min-height:18px}
-
-
-/* ── DIRECTION SELECTOR ── */
-.dir-row{display:flex;align-items:center;gap:5px;margin-bottom:7px}
-.dir-lbl{font-size:9px;color:#0d2844;letter-spacing:1px;flex-shrink:0}
-.dir-btn{padding:5px 10px;border-radius:4px;border:1px solid #0a2a18;background:#030e08;
-  color:#1a7a35;font-family:'Courier New',monospace;font-size:11px;cursor:pointer;letter-spacing:1px;flex:1}
-.dir-btn.sel{background:#004422;border-color:#00aa44;color:#00ff66;box-shadow:0 0 6px #00ff6633}
-/* ── SHIP TRACKER ── */
-#tracker{padding:3px 9px;border-top:1px solid var(--brd);flex-shrink:0;background:#020a14;max-height:70px;overflow-y:auto}
-.trk-title{font-size:8px;color:#0d2a44;letter-spacing:2px;margin-bottom:2px}
-.trk-row{display:flex;align-items:center;gap:5px;margin-bottom:1px}
-.trk-label{font-size:8px;color:#0d2844;min-width:82px;letter-spacing:.5px}
-.trk-ships{display:flex;gap:2px;flex-wrap:wrap}
-.trk-dot{width:10px;height:10px;border-radius:2px;background:#0d1a30;border:1px solid #0a1a30;flex-shrink:0}
-.trk-dot.td-hit{background:#885500;border-color:#cc7700}
-.trk-dot.td-sunk{background:#880011;border-color:#cc0022}
-.trk-sum{font-size:8px;color:#1a3a55;margin-top:4px;letter-spacing:1px}
-
+/* ── GAME OVER ── */
+#s-over{align-items:center; justify-content:center; text-align:center; gap:10px;}
+#ov-i{font-size:52px;}
+#ov-t{font-size:24px; letter-spacing:3px;}
+#ov-s{font-size:12px; color:var(--muted); line-height:1.7;}
+#ad-box{background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:14px; font-size:12px; color:var(--muted);}
+#ad-t{color:var(--green); font-size:20px;}
+#rp-btn{display:none;}
+.sc-note{font-size:10px; color:var(--muted); max-width:280px;}
 
 /* ── TUTORIAL OVERLAY ── */
-#tut{position:fixed;inset:0;z-index:200;background:rgba(0,4,14,.82);
-  display:none;align-items:center;justify-content:center;padding:20px}
-#tut.on{display:flex}
-.tut-box{background:#030d1e;border:2px solid #00aa44;border-radius:14px;
-  padding:22px 20px;max-width:310px;text-align:center;
-  box-shadow:0 0 40px #00ff6622}
-.tut-icon{font-size:38px;margin-bottom:8px}
-.tut-title{font-size:12px;color:#00ff66;letter-spacing:2px;margin-bottom:10px;font-weight:bold}
-.tut-body{font-size:11px;color:#4488aa;line-height:1.8;margin-bottom:14px}
-.tut-prog{font-size:9px;color:#0d2844;margin-bottom:12px;letter-spacing:1px}
-.tut-ok{padding:10px 28px;border-radius:6px;border:1px solid #00aa44;
-  background:#020d10;color:#00ff66;font-family:'Courier New',monospace;
-  font-size:12px;cursor:pointer;letter-spacing:2px}
-.tut-ok:active{background:#004422}
-/* ── SOUND TOGGLE ── */
-.snd-btn{padding:3px 7px;border-radius:4px;border:1px solid #0a2a18;
-  background:#030e08;color:#1a7a35;font-size:11px;cursor:pointer;
-  font-family:'Courier New',monospace}
-.snd-btn.off{color:#331a00;border-color:#1a0800}
-/* ── TUTORIAL PROGRESS BAR in menu ── */
-.tut-bar{width:220px;height:5px;background:#0a1020;border-radius:3px;overflow:hidden;margin:0 auto}
-.tut-fill{height:100%;background:#00aa44;border-radius:3px;transition:width .4s}
-.tut-note{font-size:9px;color:#0d2844;margin-top:5px;letter-spacing:1px}
+#tut{display:none; position:fixed; inset:0; background:rgba(1,4,12,.92); z-index:50; align-items:center; justify-content:center; padding:20px;}
+#tut.on{display:flex;}
+.tut-box{background:var(--panel); border:1px solid var(--green-dim); border-radius:12px; padding:20px; max-width:340px; text-align:center;}
+.tut-box .ic{font-size:36px; margin-bottom:8px;}
+.tut-box h3{color:var(--green); font-size:14px; letter-spacing:1px; margin:0 0 8px;}
+.tut-box p{font-size:12px; line-height:1.6; color:var(--text); margin:0 0 14px;}
+#tut-prog{font-size:10px; color:var(--muted); margin-bottom:8px;}
+.tut-next{padding:9px 22px; border-radius:8px; border:1px solid var(--green); color:var(--green); background:rgba(0,255,102,.08); font-size:12px;}
 
-
-/* ── ONLINE SEARCHING OVERLAY ── */
-#online-ui{position:fixed;inset:0;z-index:150;background:rgba(0,4,14,.9);
-  display:none;align-items:center;justify-content:center;padding:20px}
-#online-ui.on{display:flex}
-.ol-box{background:#030d1e;border:2px solid var(--accent);border-radius:14px;
-  padding:24px 22px;max-width:300px;text-align:center}
-.ol-icon{font-size:44px;margin-bottom:12px;animation:spin 2s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.ol-icon.found{animation:none}
-.ol-title{font-size:13px;color:var(--texthi);letter-spacing:2px;margin-bottom:10px}
-.ol-body{font-size:11px;color:#4488aa;line-height:1.8;margin-bottom:16px}
-.ol-cancel{padding:8px 22px;border-radius:5px;border:1px solid #442200;
-  background:#080500;color:#884400;font-family:'Courier New',monospace;
-  font-size:10px;cursor:pointer;letter-spacing:1px}
-/* Online indicator in header */
-.online-badge{font-size:9px;padding:2px 7px;border-radius:8px;
-  background:#001a44;color:#4488ff;border:1px solid #0033aa;letter-spacing:1px}
-
+/* ── ONLINE OVERLAY ── */
+#online-ui{display:none; position:fixed; inset:0; background:rgba(1,4,12,.92); z-index:50; align-items:center; justify-content:center; padding:20px;}
+#online-ui.on{display:flex;}
+.ol-box{background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:24px; max-width:300px; text-align:center;}
+.ol-box .ic{font-size:36px; margin-bottom:8px;}
+.ol-box h3{font-size:14px; letter-spacing:1px; margin:0 0 8px; color:var(--green);}
+.ol-box p{font-size:12px; color:var(--muted); margin:0 0 14px; white-space:pre-line;}
+.ol-cancel{padding:8px 18px; border-radius:8px; border:1px solid var(--line); color:var(--text); background:none; font-size:11px;}
 </style>
 </head>
 <body>
-<div id="stars"></div>
 
+<!-- ══════════════ MENU ══════════════ -->
 <div id="s-menu" class="scr on">
-  <div class="logo"><div style="font-size:72px;line-height:1">&#x2699;</div><div style="font-size:24px;letter-spacing:8px;color:#ffe066;text-shadow:0 0 12px #ffdd00,0 0 24px #cc8800;margin-top:-6px">&#x2605;&#x2605;&#x2605;</div></div>
-  <div class="m-title">STAR GRID</div>
-  <div class="m-sub">&#x30E2;&#x30EB;&#x30B9;&#x30AD;&#x30FC; &#x30DC;&#x30A4; &#x30A4;&#x30F3; &#x30B3;&#x30B9;&#x30E2;&#x30B9;</div>
-  <div class="m-sub" style="letter-spacing:3px;font-size:10px">&#x41C;&#x41E;&#x420;&#x421;&#x41A;&#x41E;&#x419; &#x411;&#x41E;&#x419; &#x412; &#x422;&#x420;&#x401;&#x425;&#x41C;&#x415;&#x420;&#x41D;&#x41E;&#x41C; &#x41F;&#x420;&#x41E;&#x421;&#x422;&#x420;&#x410;&#x41D;&#x421;&#x422;&#x412;&#x415;</div>
-  <button class="m-btn" onclick="sndClick();startGame()">&#x25B6;  &#x418;&#x413;&#x420;&#x410;&#x422;&#x42C; &#x421; &#x411;&#x41E;&#x422;&#x41E;&#x41C;</button>
-  <button class="m-btn" onclick="sndClick();startOnline()">&#x1F310;  &#x418;&#x413;&#x420;&#x410;&#x422;&#x42C; &#x41E;&#x41D;&#x41B;&#x410;&#x419;&#x41D;</button>
-  <div class="tut-bar"><div class="tut-fill" id="tut-fill" style="width:0%"></div></div>
-  <div class="tut-note" id="tut-note"></div>
-  <button class="m-btn gold" id="sc-btn" onclick="buySuperCube()">
-    &#x1F48E;  &#x421;&#x423;&#x41F;&#x415;&#x420;-&#x41A;&#x423;&#x411; &#x2014; 99 &#x20B8;
-    <div class="sc-note">&#x41A;&#x443;&#x431; 5&#xB3; + &#x434;&#x43E;&#x43F;. &#x432;&#x44B;&#x441;&#x442;&#x440;&#x435;&#x43B; &#x43F;&#x440;&#x438; &#x43F;&#x440;&#x43E;&#x43C;&#x430;&#x445;&#x435;</div>
-  </button>
+  <div class="logo">⚙️✦✦✦</div>
+  <div class="title">STAR GRID</div>
+  <div class="subtitle">КОСМИЧЕСКИЙ МОРСКОЙ БОЙ · 3D</div>
+  <button class="m-btn primary" onclick="startGame()">🚀 ИГРАТЬ (ПРОТИВ БОТА)</button>
+  <button class="m-btn" onclick="startOnline()">🌐 ОНЛАЙН</button>
+  <button class="m-btn" id="sc-btn" onclick="buySuperCube()">💎 СУПЕР-КУБ 5³ — 99 ₸</button>
+  <div id="tut-progress">
+    <div class="tut-bar"><div id="tut-fill"></div></div>
+    <div id="tut-note">ОБУЧЕНИЕ: ИГРА 1 ИЗ 10</div>
+  </div>
 </div>
 
+<!-- ══════════════ BATTLE ══════════════ -->
 <div id="s-battle" class="scr">
   <div class="bh">
-    <span class="bh-t">&#x2B61; STAR GRID</span>
-    <button class="snd-btn" id="snd-btn" onclick="toggleSound()">&#x1F50A;</button>
-    <span class="turn-b tp" id="turn-lbl">&#x1F464; &#x412;&#x410;&#x428; &#x425;&#x41E;&#x414;</span>
+    <span class="bh-title">STAR GRID</span>
+    <span>
+      <button class="snd-btn" id="snd-btn" onclick="toggleSound()">🔊</button>
+      <button class="back-btn" onclick="goMenu()">✕</button>
+    </span>
   </div>
+
   <div class="cr">
-    <div class="cb">
-      <div class="cl">&#x2014; &#x412;&#x410;&#x428; &#x424;&#x41B;&#x41E;&#x422; &#x2014;</div>
-      <canvas id="cp" height="210"></canvas>
-    </div>
-    <div class="cb">
-      <div class="cl">&#x2014; &#x41F;&#x420;&#x41E;&#x422;&#x418;&#x412;&#x41D;&#x418;&#x41A; &#x2014;</div>
-      <canvas id="ce" height="210"></canvas>
-    </div>
+    <div class="cb"><canvas id="cp" width="210" height="210"></canvas><div class="cl">ВАШ ФЛОТ</div></div>
+    <div class="cb"><canvas id="ce" width="210" height="210"></canvas><div class="cl">ПРОТИВНИК</div></div>
   </div>
+
   <div class="sb">
-    <div class="sv"><div class="sl">&#x41F;&#x41E;&#x41F;&#x410;&#x414;&#x410;&#x41D;&#x418;&#x419;</div><div class="sn" id="st-h" style="color:#ff2200">0</div></div>
-    <div class="sv"><div class="sl">&#x412;&#x42B;&#x421;&#x422;&#x420;&#x415;&#x41B;&#x41E;&#x412;</div><div class="sn" id="st-s">0</div></div>
-    <div class="sv"><div class="sl">&#x41F;&#x41E;&#x422;&#x415;&#x420;&#x42C;</div><div class="sn" id="st-l" style="color:#3355cc">0</div></div>
-    <div class="sv"><div class="sl">&#x421;&#x41A;&#x410;&#x41D;</div><div class="sn" id="st-sc" style="color:#cc6600">&#x2014;</div></div>
+    <div class="sv"><b id="st-h">0/0</b><span>ПОПАДАНИЙ</span></div>
+    <div class="sv"><b id="st-s">0</b><span>ВЫСТРЕЛОВ</span></div>
+    <div class="sv"><b id="st-l">0/0</b><span>ПОТЕРЬ</span></div>
+    <div class="sv"><b id="st-sc">—</b><span>СКАНОВ</span></div>
   </div>
-  <!-- PLACEMENT PANEL (shown before battle starts) -->
-  <div id="place-ui" style="display:none">
-    <div class="place-hdr">&#x1F3AF; &#x420;&#x410;&#x421;&#x421;&#x422;&#x410;&#x41D;&#x41E;&#x412;&#x41A;&#x410; &#x424;&#x41B;&#x41E;&#x422;&#x410;</div>
-    <div class="dir-row">
-      <span class="dir-lbl">&#x41D;&#x430;&#x43F;&#x440;&#x430;&#x432;&#x43B;&#x435;&#x43D;&#x438;&#x435;:</span>
-      <button class="dir-btn sel" id="dir-x" onclick="setDir('x')">&#x2192; X</button>
-      <button class="dir-btn"    id="dir-y" onclick="setDir('y')">&#x2191; Y</button>
-      <button class="dir-btn"    id="dir-z" onclick="setDir('z')">&#x2299; Z</button>
-    </div>
-    <div class="ship-chips" id="ship-chips"></div>
-    <div class="place-btns">
-      <button class="pb" onclick="autoPlaceRemaining()">&#x1F3B2; &#x410;&#x412;&#x422;&#x41E;</button>
-      <button class="pb" onclick="resetPlacement()">&#x21A9; &#x421;&#x411;&#x420;&#x41E;&#x421;</button>
-      <button class="pb ready" id="ready-btn" onclick="finishPlacement()" style="display:none">&#x2705; &#x41D;&#x410;&#x427;&#x410;&#x422;&#x42C; &#x411;&#x41E;&#x419;</button>
-    </div>
-    <div class="place-note" id="place-note">&#x412;&#x44B;&#x431;&#x435;&#x440;&#x438;&#x442;&#x435; &#x43A;&#x43E;&#x440;&#x430;&#x431;&#x43B;&#x44C; &#x438; &#x443;&#x43A;&#x430;&#x436;&#x438;&#x442;&#x435; &#x43A;&#x43E;&#x43E;&#x440;&#x434;&#x438;&#x43D;&#x430;&#x442;&#x44B;</div>
-  </div>
-  <div id="tracker">
-    <div class="trk-title">\u0424\u041B\u041E\u0422 \u041F\u0420\u041E\u0422\u0418\u0412\u041D\u0418\u041A\u0410</div>
-    <div id="trk-types"></div>
-    <div class="trk-sum" id="trk-sum"></div>
-  </div>
-  <div class="mb" id="msg">&#x412;&#x432;&#x435;&#x434;&#x438;&#x442;&#x435; &#x43A;&#x43E;&#x43E;&#x440;&#x434;&#x438;&#x43D;&#x430;&#x442;&#x44B; &#x438; &#x43D;&#x430;&#x436;&#x43C;&#x438;&#x442;&#x435; &#x41E;&#x413;&#x41E;&#x41D;&#x42C;</div>
+  <div style="text-align:center;"><span class="turn-b tp" id="turn-lbl">👤 ВАШ ХОД</span></div>
+
+  <div id="tracker"><div id="trk-types"></div><div id="trk-sum"></div></div>
+
+  <div id="msg">Добро пожаловать!</div>
+
   <div class="ctrl">
-    <div class="ctrl-lbl">&#x1F3AF; &#x412;&#x42B;&#x411;&#x415;&#x420;&#x418;&#x422;&#x415; &#x426;&#x415;&#x41B;&#x42C;</div>
+    <div id="place-ui">
+      <div id="place-note">Выберите корабль и тапните по кубу</div>
+      <div class="chips-row" id="ship-chips"></div>
+      <div class="dir-row">
+        <button class="dir-btn sel" id="dir-x" onclick="setDir('x')">→ X</button>
+        <button class="dir-btn" id="dir-y" onclick="setDir('y')">↑ Y</button>
+        <button class="dir-btn" id="dir-z" onclick="setDir('z')">⊙ Z</button>
+      </div>
+    </div>
+
     <div class="coord-row">
-      <div class="cf"><label style="color:#00ffaa">X &#x2014; &#x411;&#x423;&#x41A;&#x412;&#x410;</label><select id="sx" onchange="onCoordChange()"></select></div>
-      <div class="cf"><label style="color:#44ff44">Y &#x2014; &#x427;&#x418;&#x421;&#x41B;&#x41E;</label><select id="sy" onchange="onCoordChange()"></select></div>
-      <div class="cf"><label style="color:#aaff22">Z &#x2014; &#x420;&#x418;&#x41C;&#x421;&#x41A;.</label><select id="sz" onchange="onCoordChange()"></select></div>
-      <button class="fire" id="fire-btn" onclick="playerShoot()">&#x26A1;<br>&#x41E;&#x413;&#x41E;&#x41D;&#x42C;</button>
+      <select id="sx" onchange="onCoordChange()"></select>
+      <select id="sy" onchange="onCoordChange()"></select>
+      <select id="sz" onchange="onCoordChange()"></select>
     </div>
-    <div class="br">
-      <button class="scan" id="scan-btn" onclick="playerScan()">&#x1F50D; &#x421;&#x41A;&#x410;&#x41D;&#x418;&#x420;&#x41E;&#x412;&#x410;&#x422;&#x42C; &#x2014; &#x442;&#x440;&#x430;&#x442;&#x438;&#x442; 1 &#x445;&#x43E;&#x434; (2 &#x43A;&#x43B;&#x435;&#x442;&#x43A;&#x438;)</button>
-      <button class="xb" onclick="goMenu()">&#x2715;</button>
+
+    <div class="act-row">
+      <button class="fire mode-active" id="fire-btn" onclick="onFireBtn()">⚡<br>ОГОНЬ</button>
+      <button class="scan" id="scan-btn" onclick="onScanBtn()">🔍<br>СКАН</button>
+      <button class="xb" onclick="resetPlacement()" id="cancel-btn" title="Сбросить расстановку">↩</button>
     </div>
+    <button id="ready-btn" onclick="finishPlacement()">✅ НАЧАТЬ БОЙ</button>
   </div>
+
   <div class="leg">
-    <div class="li"><div class="ld" style="background:#00ff44;border:1px solid #00aa22"></div>&#x41A;&#x43E;&#x440;&#x430;&#x431;&#x43B;&#x44C;</div>
-    <div class="li"><div class="ld" style="background:#ff2200"></div>&#x41F;&#x43E;&#x43F;&#x430;&#x434;&#x430;&#x43D;&#x438;&#x435;</div>
-    <div class="li"><div class="ld" style="background:#ffaa00"></div>&#x420;&#x44F;&#x434;&#x43E;&#x43C;</div>
-    <div class="li"><div class="ld" style="background:#cccccc;border:1px solid #888"></div>&#x41F;&#x440;&#x43E;&#x43C;&#x430;&#x445;</div>
-    <div class="li"><div class="ld" style="background:#cccccc;border:1px solid #888"></div>&#x411;&#x435;&#x437;&#x43E;&#x43F;&#x430;&#x441;&#x43D;&#x43E;</div>
-    <div class="li"><div class="ld" style="background:#cc5500"></div>&#x421;&#x43A;&#x430;&#x43D;:&#x435;&#x441;&#x442;&#x44C;</div>
-    <div class="li"><div class="ld" style="background:#223344;border:1px solid #334"></div>&#x421;&#x43A;&#x430;&#x43D;:&#x43F;&#x443;&#x441;&#x442;&#x43E;</div>
-    <div class="li"><div class="ld" style="background:#00ff44;border:1px solid #0a0"></div>&#x41F;&#x440;&#x438;&#x446;&#x435;&#x43B;</div>
+    <span class="li"><span class="ld" style="background:#00ff44"></span>Корабль</span>
+    <span class="li"><span class="ld" style="background:#ff2200"></span>Попадание</span>
+    <span class="li"><span class="ld" style="background:#ffaa00"></span>Рядом</span>
+    <span class="li"><span class="ld" style="background:#ffffff"></span>Промах / Безопасно</span>
+    <span class="li"><span class="ld" style="background:#cc5500"></span>Скан: корабль</span>
   </div>
+
   <div class="log" id="log"></div>
 </div>
 
+<!-- ══════════════ GAME OVER ══════════════ -->
 <div id="s-over" class="scr">
-  <div class="oi" id="ov-i"></div>
-  <div class="ot" id="ov-t"></div>
-  <div class="os" id="ov-s"></div>
-  <div class="adbox" id="ad-box" style="display:none">
-    <div class="adin">[ &#x420;&#x415;&#x41A;&#x41B;&#x410;&#x41C;&#x41D;&#x410;&#x42F; &#x41F;&#x410;&#x423;&#x417;&#x410; ]<br>Google AdMob<br>&#x412;&#x430;&#x448; &#x43F;&#x430;&#x440;&#x442;&#x43D;&#x451;&#x440; &#x437;&#x434;&#x435;&#x441;&#x44C;</div>
-    <div class="adct" id="ad-t">5</div>
-  </div>
-  <button class="o-btn o-win" id="rp-btn" onclick="replayGame()" style="display:none">&#x1F504;  &#x418;&#x413;&#x420;&#x410;&#x422;&#x42C; &#x421;&#x41D;&#x41E;&#x412;&#x410;</button>
-  <button class="o-btn o-def" onclick="goMenu()">&#x2190; &#x41C;&#x415;&#x41D;&#x42E;</button>
+  <div id="ov-i">🏆</div>
+  <div id="ov-t">ПОБЕДА!</div>
+  <div id="ov-s"></div>
+  <div id="ad-box"><div>Реклама заканчивается через</div><div id="ad-t">5</div></div>
+  <button class="m-btn primary" id="rp-btn" onclick="replayGame()">▶ ИГРАТЬ СНОВА</button>
+  <button class="m-btn" onclick="goMenu()">☰ МЕНЮ</button>
 </div>
 
-<!-- socket.io injected by server; falls back to CDN for local dev -->
-<script>if(location.protocol!=="file:"){const s=document.createElement("script");s.src=location.origin+"/socket.io/socket.io.js";s.onerror=()=>{const s2=document.createElement("script");s2.src="https://cdn.socket.io/4.7.2/socket.io.min.js";document.head.appendChild(s2);};document.head.appendChild(s);}</script>
+<!-- ══════════════ TUTORIAL OVERLAY ══════════════ -->
+<div id="tut">
+  <div class="tut-box">
+    <div class="ic" id="tut-icon">⚙</div>
+    <h3 id="tut-title"></h3>
+    <p id="tut-body"></p>
+    <div id="tut-prog"></div>
+    <button class="tut-next" onclick="tutNext()">ДАЛЬШЕ →</button>
+  </div>
+</div>
+
+<!-- ══════════════ ONLINE OVERLAY ══════════════ -->
+<div id="online-ui">
+  <div class="ol-box">
+    <div class="ic" id="ol-icon">🔍</div>
+    <h3 id="ol-title">ПОИСК СОПЕРНИКА</h3>
+    <p id="ol-body">Подключаемся...</p>
+    <button class="ol-cancel" onclick="cancelOnline()">ОТМЕНА</button>
+  </div>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
 <script>
+
 'use strict';
-
-function gaEvent(name, params){ try{ if(window.gtag) gtag('event', name, params||{}); }catch(e){} }
-
-let G = 10; // dynamic grid size, declared early to avoid TDZ errors
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// ═══════════════════════════════════════════
 // COORDINATE LABELS
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// ═══════════════════════════════════════════
 const LAT = ['A','B','C','D','E','F','G','H','I','J'];
 const ROM = ['I','II','III','IV','V','VI','VII','VIII','IX','X'];
-function cStr(x,y,z){ return LAT[9-x]+' \u00b7 '+(10-y)+' \u00b7 '+ROM[z]; }
+function cStr(x,y,z){ return LAT[9-x]+' · '+(10-y)+' · '+ROM[9-z]; }
 
 (function buildSelects(){
   const sx=document.getElementById('sx');
@@ -325,31 +258,29 @@ function cStr(x,y,z){ return LAT[9-x]+' \u00b7 '+(10-y)+' \u00b7 '+ROM[z]; }
   const sz=document.getElementById('sz');
   [...LAT].reverse().forEach((l,i)=>{ const o=document.createElement('option'); o.value=i; o.textContent=l; sx.appendChild(o); });
   for(let i=0;i<10;i++){ const o=document.createElement('option'); o.value=i; o.textContent=10-i; sy.appendChild(o); }
-  ROM.slice(0,G).forEach((r,i)=>{ const o=document.createElement('option'); o.value=i; o.textContent=r; sz.appendChild(o); });
+  [...ROM].reverse().forEach((r,i)=>{ const o=document.createElement('option'); o.value=i; o.textContent=r; sz.appendChild(o); });
 })();
 
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// ═══════════════════════════════════════════
 // CONSTANTS
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-// (G already declared at top of script)
+// ═══════════════════════════════════════════
+let G = 10; // dynamic: 5 in tutorial, 10 full
 
-// \u2500\u2500 LINEAR FLEET (1\u00D71\u00D7N ships, total 105 cells = 10.5% \u2264 20%) \u2500\u2500
+// ── LINEAR FLEET (1×1×N ships, total 105 cells = 10.5% ≤ 20%) ──
 const SHIP_TYPES = [
-  {size:8, count:1, name:'\u0424\u043B\u0430\u0433\u043C\u0430\u043D'},
-  {size:7, count:2, name:'\u041B\u0438\u043D\u043A\u043E\u0440'},
-  {size:6, count:3, name:'\u041A\u0440\u0435\u0439\u0441\u0435\u0440'},
-  {size:5, count:4, name:'\u042D\u0441\u043C\u0438\u043D\u0435\u0446'},
-  {size:4, count:5, name:'\u0424\u0440\u0435\u0433\u0430\u0442'},
-  {size:3, count:5, name:'\u041A\u043E\u0440\u0432\u0435\u0442'},
-  {size:2, count:5, name:'\u041F\u0430\u0442\u0440\u0443\u043B\u044C'},
+  {size:6, count:1, name:'Флагман'},
+  {size:5, count:2, name:'Крейсер'},
+  {size:4, count:2, name:'Эсминец'},
+  {size:3, count:3, name:'Фрегат'},
+  {size:2, count:3, name:'Патруль'},
 ];
-// Total: 25 ships, 1\u00D78+2\u00D77+3\u00D76+4\u00D75+5\u00D74+5\u00D73+5\u00D72 = 105 cells
+// Total: 11 ships, 1×6+2×5+2×4+3×3+3×2 = 39 cells = 3.9% ≤ 20%
 function getFlatFleet(){
   const a=[];
   getActiveTypes().forEach(t=>{ for(let i=0;i<t.count;i++) a.push(t.size); });
   return a;
 }
-// Build id\u2192{size,name} map (same order as autoPlaceLinear)
+// Build id→{size,name} map (same order as autoPlaceLinear)
 let shipTypeById={};
 function buildShipTypeById(){
   shipTypeById={};
@@ -358,7 +289,7 @@ function buildShipTypeById(){
 }
 
 const COL = {
-  gridLine: 0x00aa55, gridBox: 0x00aa44,
+  gridLine: 0x004422, gridBox: 0x00aa44,
   axX: 0x00ffaa, axY: 0x44ff44, axZ: 0xaaff22,
   pShip: 0x00ff44,
   hit: 0xff2200, near: 0xffaa00, miss: 0xffffff,
@@ -368,18 +299,18 @@ const COL = {
   reveal: 0x553300,
 };
 
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// ═══════════════════════════════════════════
 // GAME STATE
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// ═══════════════════════════════════════════
 let pGrid,eGrid,pShots,eShots;
 let scanResults=[],scanTick=0;
 let turn,isOver,shotCount,hitCount;
 let superCube=false,bonusShot=false;
 let huntQ=[],adInterval;
 
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// ═══════════════════════════════════════════
 // GRID UTILITIES
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// ═══════════════════════════════════════════
 function mk3(){ return Array.from({length:G},()=>Array.from({length:G},()=>new Array(G).fill(0))); }
 
 // Returns array of [x,y,z] cells for a linear ship
@@ -395,7 +326,7 @@ function getShipCells(x,y,z,len,dir){
   return cells;
 }
 
-// Can place 1\u00D71\u00D7len ship at (x,y,z) in direction dir?
+// Can place 1×1×len ship at (x,y,z) in direction dir?
 function canPlaceLinear(g,x,y,z,len,dir){
   const cells=getShipCells(x,y,z,len,dir);
   // Bounds check
@@ -456,9 +387,9 @@ function safeZone(sunkIds,g,shots){
   return safe;
 }
 
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// ═══════════════════════════════════════════
 // THREE.JS
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// ═══════════════════════════════════════════
 let R1,R2,S1,S2,K1,K2;
 let V1=[],V2=[];
 let raf;
@@ -480,16 +411,16 @@ function mkRenderer(id){
   return {rend,scene,cam};
 }
 
-// \u2500\u2500\u2500 SPRITE LABEL \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+// ─── SPRITE LABEL ──────────────────────────
 function makeSprite(text, hexCol){
-  const S=160;
+  const S=320;
   const cv=document.createElement('canvas'); cv.width=S; cv.height=S;
   const ctx=cv.getContext('2d');
   // dark circle bg
   ctx.fillStyle='rgba(1,8,20,0.75)';
   ctx.beginPath(); ctx.arc(S/2,S/2,S/2-3,0,Math.PI*2); ctx.fill();
   // text
-  const sz=text.length>=4?34:text.length===3?42:text.length===2?54:68;
+  const sz=text.length>=4?72:text.length===3?90:text.length===2?114:144;
   ctx.fillStyle='#'+hexCol.toString(16).padStart(6,'0');
   ctx.font='bold '+sz+'px "Courier New",monospace';
   ctx.textAlign='center'; ctx.textBaseline='middle';
@@ -497,101 +428,59 @@ function makeSprite(text, hexCol){
   const tex=new THREE.CanvasTexture(cv);
   const mat=new THREE.SpriteMaterial({map:tex,transparent:true,depthTest:false});
   const spr=new THREE.Sprite(mat);
-  spr.scale.set(0.95,0.95,1);
+  spr.scale.set(2.0,2.0,1);
   return spr;
 }
 
-// \u2500\u2500\u2500 AXIS LABELS \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
-// Place labels on all 4 parallel edges of each axis for 360\u00B0 visibility
+// ─── AXIS LABELS ───────────────────────────
+// Place labels on all 4 parallel edges of each axis for 360° visibility
 function addAxisLabels(scene){
-  // Four edges per axis (all 4 parallel corners) so a label is visible
-  // no matter which way the cube is rotated
-  const O=1.0, N=G;
+  // Two edges per axis: near corner (0,0,0) + far corner (G,G,G)
+  // This gives one label set per face, readable from all viewing angles
+  const O=1.1, N=G;
 
-  // X axis \u2014 labels at all 4 Y/Z corner combinations
+  // X axis — near: y=-O z=-O  |  far: y=N+O z=N+O
   [...LAT].reverse().slice(0,G).forEach((lbl,i)=>{
-    [[-O,-O],[N+O,-O],[-O,N+O],[N+O,N+O]].forEach(([yO,zO])=>{
+    [[-O,-O],[N+O,N+O]].forEach(([yO,zO])=>{
       const s=makeSprite(lbl,0x00ffaa); s.position.set(i+0.5,yO,zO); scene.add(s);
     });
   });
 
-  // Y axis \u2014 labels at all 4 X/Z corner combinations
+  // Y axis — near: x=-O z=-O  |  far: x=N+O z=N+O
   for(let i=0;i<G;i++){
-    [[-O,-O],[N+O,-O],[-O,N+O],[N+O,N+O]].forEach(([xO,zO])=>{
+    [[-O,-O],[N+O,N+O]].forEach(([xO,zO])=>{
       const s=makeSprite(String(G-i),0x44ff44); s.position.set(xO,i+0.5,zO); scene.add(s);
     });
   }
 
-  // Z axis \u2014 labels at all 4 X/Y corner combinations
-  ROM.slice(0,G).forEach((lbl,i)=>{
-    [[-O,-O],[N+O,-O],[-O,N+O],[N+O,N+O]].forEach(([xO,yO])=>{
+  // Z axis (reversed: X at z=0) — near: x=-O y=-O  |  far: x=N+O y=N+O
+  [...ROM].reverse().forEach((lbl,i)=>{
+    [[-O,-O],[N+O,N+O]].forEach(([xO,yO])=>{
       const s=makeSprite(lbl,0xaaff22); s.position.set(xO,yO,i+0.5); scene.add(s);
     });
   });
 
   // Axis name tips (small, bright)
-  [['X',0xaaffcc,N+2.0,-1.6,-1.6],
-   ['Y',0x88ff88,-1.6,N+2.0,-1.6],
-   ['Z',0xddff66,-1.6,-1.6,N+2.0]].forEach(([t,c,px,py,pz])=>{
-    const s=makeSprite(t,c); s.scale.set(1.0,1.0,1); s.position.set(px,py,pz); scene.add(s);
+  [['X',0xaaffcc,N+2.2,-1.8,-1.8],
+   ['Y',0x88ff88,-1.8,N+2.2,-1.8],
+   ['Z',0xddff66,-1.8,-1.8,N+2.2]].forEach(([t,c,px,py,pz])=>{
+    const s=makeSprite(t,c); s.scale.set(1.6,1.6,1); s.position.set(px,py,pz); scene.add(s);
   });
 }
 
-// \u2500\u2500\u2500 GRID LINES \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
-
-// \u2500\u2500\u2500 AIM HIGHLIGHT: target cell + corner ticks (no closed contour) \u2500\u2500\u2500
-let HL1=[], HL2=[];
-function clearHighlight(hl){ hl.forEach(o=>{ if(o.scene) o.scene.remove(o); }); hl.length=0; }
-
-function buildHighlight(scene, hl, px, py, pz){
-  clearHighlight(hl);
-  if(px==null||py==null||pz==null) return;
-  const x0=px, y0=py, z0=pz, x1=px+1, y1=py+1, z1=pz+1;
-
-  // Filled pulsing target cell
-  const geo=new THREE.BoxGeometry(1,1,1);
-  const mat=new THREE.MeshBasicMaterial({color:0x00ff66,transparent:true,opacity:0.4});
-  const cube=new THREE.Mesh(geo,mat);
-  cube.position.set(px+0.5,py+0.5,pz+0.5);
-  cube.userData.pulseOpacity=true; cube.userData.baseOp=0.4; cube.userData.phase=0;
-  cube.scene=scene; scene.add(cube); hl.push(cube);
-
-  // Corner ticks: short perpendicular line stubs at each of the 8 cube
-  // corners, reaching a little way toward neighbours WITHOUT closing
-  // into full grid squares.
-  const tMat=new THREE.LineBasicMaterial({color:0x00ff99,transparent:true,opacity:0.85});
-  const L=0.4;
-  const corners=[];
-  for(const cx of [x0,x1]) for(const cy of [y0,y1]) for(const cz of [z0,z1]) corners.push([cx,cy,cz]);
-  const addTick=(a,b)=>{
-    const g=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(...a),new THREE.Vector3(...b)]);
-    const l=new THREE.Line(g,tMat);
-    l.userData.pulseOpacity=true; l.userData.baseOp=0.85; l.userData.phase=0;
-    l.scene=scene; scene.add(l); hl.push(l);
-  };
-  corners.forEach(([cx,cy,cz])=>{
-    addTick([cx-L,cy,cz],[cx+L,cy,cz]);
-    addTick([cx,cy-L,cz],[cx,cy+L,cz]);
-    addTick([cx,cy,cz-L],[cx,cy,cz+L]);
-  });
-
-  // Axis position markers (bright dot on each axis's near edge)
-  const O=1.0;
-  const mkDot=(x,y,z,color)=>{
-    const g=new THREE.SphereGeometry(0.24,10,10);
-    const m=new THREE.MeshBasicMaterial({color,transparent:true,opacity:0.95,depthTest:false});
-    const s=new THREE.Mesh(g,m); s.position.set(x,y,z); s.renderOrder=999;
-    s.scene=scene; scene.add(s); hl.push(s);
-  };
-  mkDot(px+0.5,-O,-O,0x00ffaa);
-  mkDot(-O,py+0.5,-O,0x44ff44);
-  mkDot(-O,-O,pz+0.5,0xaaff22);
-}
-
+// ─── GRID LINES ────────────────────────────
 function buildGrid(scene){
   const lm=(col,op)=>new THREE.LineBasicMaterial({color:col,transparent:true,opacity:op});
-  // Interior grid is intentionally invisible \u2014 only the local highlight
-  // (built by buildHighlight) shows grid lines, near the aimed cell.
+  // Dashed interior grid: very faint
+  const dashMat=new THREE.LineDashedMaterial({color:COL.gridLine,transparent:true,opacity:0.18,dashSize:0.22,gapSize:0.28});
+  for(let i=0;i<=G;i++) for(let j=0;j<=G;j++){
+    [[i,i,j,j,0,G],[i,i,0,G,j,j],[0,G,i,i,j,j]].forEach(([ax,bx,ay,by,az,bz])=>{
+      const g=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(ax,ay,az),new THREE.Vector3(bx,by,bz)]);
+      const l=new THREE.Line(g,dashMat);
+      l.computeLineDistances();
+      scene.add(l);
+    });
+  }
   // Solid bounding box edges (brighter, still relatively thin)
   const edges=[
     [[0,0,0],[G,0,0],COL.axX,.90],[[0,0,0],[0,G,0],COL.axY,.90],[[0,0,0],[0,0,G],COL.axZ,.90],
@@ -607,18 +496,6 @@ function buildGrid(scene){
   addAxisLabels(scene);
 }
 
-
-function addSphere(scene,vl,x,y,z,color,opacity,radius){
-  const geo=new THREE.SphereGeometry(radius||0.28,10,10);
-  const mat=new THREE.MeshBasicMaterial({color,transparent:true,opacity});
-  const m=new THREE.Mesh(geo,mat);
-  m.position.set(x+.5,y+.5,z+.5);
-  m.userData.pulse=true;
-  m.userData.baseR=radius||0.28;
-  m.userData.phase=Math.random()*6.28;
-  scene.add(m);
-  const v={m,el:null,scene}; vl.push(v); return v;
-}
 function addVox(scene,vl,x,y,z,color,opacity,sz){
   opacity=opacity===undefined?1:opacity; sz=sz===undefined?0.84:sz;
   const geo=new THREE.BoxGeometry(sz,sz,sz);
@@ -641,41 +518,23 @@ function initThree(){
   const e=mkRenderer('ce'); R2=e.rend; S2=e.scene; K2=e.cam;
   buildGrid(S1); buildGrid(S2);
   clearVox(V1); clearVox(V2);
-  clearHighlight(HL1); clearHighlight(HL2);
   bindDrag(0); bindDrag(1);
   renderLoop();
 }
-function renderLoop(){
-  raf=requestAnimationFrame(renderLoop);
-  const t=performance.now()*0.003;
-  [V1,V2].forEach(vl=>vl.forEach(v=>{
-    if(v.m&&v.m.userData.pulse){
-      const s=1+0.22*Math.sin(t+v.m.userData.phase);
-      v.m.scale.setScalar(s);
-    }
-  }));
-  [HL1,HL2].forEach(hl=>hl.forEach(o=>{
-    if(o.userData&&o.userData.pulseOpacity){
-      const p=0.5+0.5*Math.sin(t*1.6+o.userData.phase);
-      o.material.opacity=o.userData.baseOp*(0.55+0.45*p);
-    }
-  }));
-  R1.render(S1,K1); R2.render(S2,K2);
-}
+function renderLoop(){ raf=requestAnimationFrame(renderLoop); R1.render(S1,K1); R2.render(S2,K2); }
 
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-// DRAG ROTATION
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-// \u2500\u2500\u2500 Raycast: click/tap cell in 3D cube \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
-function hitGridCell(clientX, clientY){
-  const canvas=document.getElementById('cp');
+// ═══════════════════════════════════════════
+// DRAG ROTATION + TAP/SWIPE INPUT
+// ═══════════════════════════════════════════
+// Generic raycast: screen point -> grid cell on the near face of the cube
+function hitGridCellGeneric(canvasId, cam, clipMax, clientX, clientY){
+  const canvas=document.getElementById(canvasId);
   const rect=canvas.getBoundingClientRect();
   const mx=((clientX-rect.left)/canvas.clientWidth)*2-1;
   const my=-((clientY-rect.top)/canvas.clientHeight)*2+1;
   const ray=new THREE.Raycaster();
-  ray.setFromCamera({x:mx,y:my},K1);
+  ray.setFromCamera({x:mx,y:my},cam);
   const o=ray.ray.origin, d=ray.ray.direction;
-  // Ray-AABB vs cube (0,0,0)-(10,10,10)
   let tmin=-Infinity,tmax=Infinity;
   for(const ax of['x','y','z']){
     const inv=1/d[ax];
@@ -685,17 +544,49 @@ function hitGridCell(clientX, clientY){
   }
   if(tmax<tmin||tmax<0) return null;
   const t=tmin>0?tmin:tmax;
+  const cm=Math.max(0,clipMax);
   return {
-    x:Math.min(G-selSize,Math.min(G-1,Math.max(0,Math.floor(o.x+t*d.x)))),
-    y:Math.min(G-selSize,Math.min(G-1,Math.max(0,Math.floor(o.y+t*d.y)))),
-    z:Math.min(G-selSize,Math.min(G-1,Math.max(0,Math.floor(o.z+t*d.z)))),
+    x:Math.min(cm,Math.min(G-1,Math.max(0,Math.floor(o.x+t*d.x)))),
+    y:Math.min(cm,Math.min(G-1,Math.max(0,Math.floor(o.y+t*d.y)))),
+    z:Math.min(cm,Math.min(G-1,Math.max(0,Math.floor(o.z+t*d.z)))),
   };
 }
 
-function handleCubeClick(clientX,clientY){
+// Project the three world axes from a grid cell into screen space and pick
+// whichever one best matches the direction of the finger/mouse swipe.
+function pickAxisFromDrag(canvasId, cam, cell, dx, dy){
+  const canvas=document.getElementById(canvasId);
+  const origin=new THREE.Vector3(cell.x+0.5, cell.y+0.5, cell.z+0.5);
+  const toPix=(v)=>{ const p=v.clone().project(cam); return {x:(p.x*0.5+0.5)*canvas.clientWidth, y:(-(p.y*0.5)+0.5)*canvas.clientHeight}; };
+  const p0=toPix(origin);
+  const axes={x:new THREE.Vector3(1,0,0), y:new THREE.Vector3(0,1,0), z:new THREE.Vector3(0,0,1)};
+  let best='x', bestScore=-Infinity;
+  const dragLen=Math.sqrt(dx*dx+dy*dy)||1;
+  for(const name of ['x','y','z']){
+    const p1=toPix(origin.clone().add(axes[name]));
+    const ax=p1.x-p0.x, ay=p1.y-p0.y;
+    const alen=Math.sqrt(ax*ax+ay*ay)||1;
+    const score=Math.abs((dx*ax+dy*ay)/(dragLen*alen));
+    if(score>bestScore){bestScore=score;best=name;}
+  }
+  return best;
+}
+
+const TAP_EPS=10, SWIPE_MAX=90;
+
+// Tap or short swipe on OWN cube during placement: tap = place at cell
+// (current direction); short swipe = also pick direction from the swipe.
+function handlePlacementRelease(downX,downY,upX,upY){
   if(!inPlacement||selSize<=0||toPlace.length===0) return;
-  const cell=hitGridCell(clientX,clientY);
+  const dx=upX-downX, dy=upY-downY;
+  const dist=Math.sqrt(dx*dx+dy*dy);
+  if(dist>SWIPE_MAX) return; // big drag = the player was rotating the view
+  const cell=hitGridCellGeneric('cp',K1,G-selSize,downX,downY);
   if(!cell) return;
+  if(dist>=TAP_EPS){
+    const axis=pickAxisFromDrag('cp',K1,cell,dx,dy);
+    setDir(axis);
+  }
   document.getElementById('sx').value=cell.x;
   document.getElementById('sy').value=cell.y;
   document.getElementById('sz').value=cell.z;
@@ -703,13 +594,36 @@ function handleCubeClick(clientX,clientY){
   placeAtCoords();
 }
 
+// Tap on ENEMY cube during battle: fires (or scans, if scan mode is on)
+// at the tapped cell — no coordinate lists needed.
+let battleMode='fire';
+function setBattleMode(m){
+  battleMode=m;
+  const fb=document.getElementById('fire-btn'), sb=document.getElementById('scan-btn');
+  if(fb) fb.classList.toggle('mode-active', m==='fire');
+  if(sb) sb.classList.toggle('mode-active', m==='scan');
+}
+function onFireBtn(){ if(inPlacement){ placeAtCoords(); } else { setBattleMode('fire'); } }
+function onScanBtn(){ if(inPlacement){ autoPlaceRemaining(); } else { setBattleMode('scan'); } }
+function handleTargetTap(clientX,clientY){
+  if(inPlacement||isOver) return;
+  if(onlineMode){ if(!onlineTurn) return; } else if(turn!=='p'){ return; }
+  const cell=hitGridCellGeneric('ce',K2,G-1,clientX,clientY);
+  if(!cell) return;
+  document.getElementById('sx').value=cell.x;
+  document.getElementById('sy').value=cell.y;
+  document.getElementById('sz').value=cell.z;
+  renderE();
+  if(battleMode==='scan') playerScan(); else playerShoot();
+}
+
 function bindDrag(idx){
   const canvas=document.getElementById(idx===0?'cp':'ce');
   let active=false,lx=0,ly=0,sx0=0,sy0=0,moved=false;
   const move=(x,y)=>{
     if(!active) return;
-    const dx=x-sx0,dy=y-sy0;
-    if(Math.sqrt(dx*dx+dy*dy)>8) moved=true;
+    const ddx=x-sx0,ddy=y-sy0;
+    if(Math.sqrt(ddx*ddx+ddy*ddy)>8) moved=true;
     if(moved){
       CAM[idx].th+=(x-lx)*.013;
       CAM[idx].ph=Math.max(.12,Math.min(Math.PI-.12,CAM[idx].ph-(y-ly)*.013));
@@ -717,14 +631,19 @@ function bindDrag(idx){
     }
     lx=x; ly=y;
   };
-  // Mouse drag + click-to-place
+  const release=(x,y)=>{
+    if(idx===0&&inPlacement){
+      handlePlacementRelease(sx0,sy0,x,y);
+    } else if(idx===1&&!moved){
+      handleTargetTap(x,y);
+    }
+    active=false;
+  };
+  // Mouse
   canvas.addEventListener('mousedown',e=>{active=true;lx=sx0=e.clientX;ly=sy0=e.clientY;moved=false;e.preventDefault();});
   window.addEventListener('mousemove',e=>{ if(active) move(e.clientX,e.clientY); });
-  window.addEventListener('mouseup',e=>{
-    if(active&&!moved&&idx===0) handleCubeClick(e.clientX,e.clientY);
-    active=false;
-  });
-  // Touch drag + tap-to-place
+  window.addEventListener('mouseup',e=>{ if(active) release(e.clientX,e.clientY); });
+  // Touch
   canvas.addEventListener('touchstart',e=>{
     if(e.touches.length===1){active=true;lx=sx0=e.touches[0].clientX;ly=sy0=e.touches[0].clientY;moved=false;e.preventDefault();}
   },{passive:false});
@@ -732,27 +651,26 @@ function bindDrag(idx){
     if(active&&e.touches.length===1){move(e.touches[0].clientX,e.touches[0].clientY);e.preventDefault();}
   },{passive:false});
   canvas.addEventListener('touchend',e=>{
-    if(!moved&&idx===0&&e.changedTouches.length===1)
-      handleCubeClick(e.changedTouches[0].clientX,e.changedTouches[0].clientY);
+    if(active&&e.changedTouches.length===1) release(e.changedTouches[0].clientX,e.changedTouches[0].clientY);
     active=false;
   });
 }
 
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// ═══════════════════════════════════════════
 // RENDER VOXELS
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// ═══════════════════════════════════════════
 function renderP(){
   clearVox(V1);
   for(let z=0;z<G;z++) for(let y=0;y<G;y++) for(let x=0;x<G;x++){
     if(pGrid[z][y][x]>0){
       const k=x+','+y+','+z;
-      addVox(S1,V1,x,y,z,eShots.has(k)?COL.hit:COL.pShip,eShots.has(k)?.6:.55);
+      addVox(S1,V1,x,y,z,eShots.has(k)?COL.hit:COL.pShip,eShots.has(k)?.92:.8);
     }
   }
-  for(const k of eShots){ const [x,y,z]=k.split(',').map(Number); if(pGrid[z][y][x]===0) addSphere(S1,V1,x,y,z,COL.miss,.6,.2); }
+  for(const k of eShots){ const [x,y,z]=k.split(',').map(Number); if(pGrid[z][y][x]===0) addVox(S1,V1,x,y,z,COL.miss,.5,.5); }
   const pSunk=getSunk(eShots,pGrid);
-  if(pSunk.length){ safeZone(pSunk,pGrid,eShots).forEach(k=>{ const [x,y,z]=k.split(',').map(Number); addVox(S1,V1,x,y,z,COL.safe,.18,.4); }); }
-  // Placement preview ghost \u2014 linear ship in chosen direction
+  if(pSunk.length){ safeZone(pSunk,pGrid,eShots).forEach(k=>{ const [x,y,z]=k.split(',').map(Number); addVox(S1,V1,x,y,z,COL.safe,.3,.65); }); }
+  // Placement preview ghost — linear ship in chosen direction
   if(inPlacement&&selSize>0){
     const [px,py,pz]=getXYZ();
     const valid=canPlaceLinear(pGrid,px,py,pz,selSize,placeDir);
@@ -761,24 +679,21 @@ function renderP(){
       if(cx>=0&&cy>=0&&cz>=0&&cx<G&&cy<G&&cz<G)
         addVox(S1,V1,cx,cy,cz,gc,.38,.88);
     });
-    buildHighlight(S1,HL1,px,py,pz);
-  } else {
-    clearHighlight(HL1);
   }
 }
 
 function renderE(){
   clearVox(V2);
   updateTracker();
-  // \u2500\u2500 ONLINE MODE: use server-validated result map \u2500\u2500\u2500\u2500\u2500\u2500
+  // ── ONLINE MODE: use server-validated result map ──────
   if(onlineMode){
     const safeOnline=new Set();
     for(const[k,info] of Object.entries(onlineResultMap)){
       const[x,y,z]=k.split(',').map(Number);
       const col=info.result==='hit'?COL.hit:info.result==='near'?COL.near:COL.miss;
-      const op=info.result==='hit'?.55:info.result==='near'?.5:.35;
-      const sz=info.result==='hit'?.5:.32;
-      addSphere(S2,V2,x,y,z,col,op<.4?.6:.8,sz<.4?.2:.26);
+      const op=info.result==='hit'?.92:info.result==='near'?.88:.5;
+      const sz=info.result==='hit'?.84:.58;
+      addVox(S2,V2,x,y,z,col,op,sz);
       if(info.sunkCells) info.sunkCells.forEach(([cx,cy,cz])=>{
         all26(cx,cy,cz).forEach(([nx,ny,nz])=>{
           const nk=nx+','+ny+','+nz;
@@ -786,59 +701,54 @@ function renderE(){
         });
       });
     }
-    safeOnline.forEach(k=>{ const[x,y,z]=k.split(',').map(Number); addVox(S2,V2,x,y,z,COL.safe,.18,.4); });
+    safeOnline.forEach(k=>{ const[x,y,z]=k.split(',').map(Number); addVox(S2,V2,x,y,z,COL.safe,.28,.68); });
     // Preview
     if(!isOver){
       const[px,py,pz]=getXYZ(),pk=px+','+py+','+pz;
-      if(!onlineResultMap[pk]&&!safeOnline.has(pk)) addVox(S2,V2,px,py,pz,COL.prev,.3,.5);
-      buildHighlight(S2,HL2,px,py,pz);
-    } else {
-      clearHighlight(HL2);
+      if(!onlineResultMap[pk]&&!safeOnline.has(pk)) addVox(S2,V2,px,py,pz,COL.prev,.42,.72);
     }
     if(isOver) for(let[k,info] of Object.entries(onlineResultMap))
       if(info.sunkCells) info.sunkCells.forEach(([cx,cy,cz])=>{ if(eGrid[cz][cy][cx]===0) addVox(S2,V2,cx,cy,cz,COL.reveal,.4); });
     return;
   }
-  // \u2500\u2500 BOT MODE: existing logic \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+  // ── BOT MODE: existing logic ──────────────────────────
   const eSunk=getSunk(pShots,eGrid);
   const safeCells=safeZone(eSunk,eGrid,pShots);
   for(const k of pShots){
     const [x,y,z]=k.split(',').map(Number);
     const isHit=eGrid[z][y][x]>0;
     const isNear=!isHit&&nearShip(eGrid,pShots,x,y,z);
-    addSphere(S2,V2,x,y,z,isHit?COL.hit:isNear?COL.near:COL.miss,isHit?.8:isNear?.75:.6,isHit?.26:isNear?.24:.2);
+    addVox(S2,V2,x,y,z,isHit?COL.hit:isNear?COL.near:COL.miss,isHit?.92:isNear?.88:.5,isHit?.84:.58);
   }
   // WHITE safe zone
-  safeCells.forEach(k=>{ const [x,y,z]=k.split(',').map(Number); if(!pShots.has(k)) addVox(S2,V2,x,y,z,COL.safe,.18,.4); });
+  safeCells.forEach(k=>{ const [x,y,z]=k.split(',').map(Number); if(!pShots.has(k)) addVox(S2,V2,x,y,z,COL.safe,.28,.68); });
   // Scan results
-  scanResults.forEach(sr=>{ if(!pShots.has(sr.x+','+sr.y+','+sr.z)&&!safeCells.has(sr.x+','+sr.y+','+sr.z)) addVox(S2,V2,sr.x,sr.y,sr.z,sr.col,.5,.4); });
+  scanResults.forEach(sr=>{ if(!pShots.has(sr.x+','+sr.y+','+sr.z)&&!safeCells.has(sr.x+','+sr.y+','+sr.z)) addVox(S2,V2,sr.x,sr.y,sr.z,sr.col,.75,.6); });
   // Preview (current target)
   if(!isOver){
     const [px,py,pz]=getXYZ(), pk=px+','+py+','+pz;
-    if(!pShots.has(pk)&&!safeCells.has(pk)) addVox(S2,V2,px,py,pz,COL.prev,.3,.5);
-    buildHighlight(S2,HL2,px,py,pz);
-  } else {
-    clearHighlight(HL2);
+    if(!pShots.has(pk)&&!safeCells.has(pk)) addVox(S2,V2,px,py,pz,COL.prev,.42,.72);
   }
   if(isOver){
     for(let z=0;z<G;z++) for(let y=0;y<G;y++) for(let x=0;x<G;x++)
-      if(eGrid[z][y][x]>0&&!pShots.has(x+','+y+','+z)) addVox(S2,V2,x,y,z,COL.reveal,.35,.55);
+      if(eGrid[z][y][x]>0&&!pShots.has(x+','+y+','+z)) addVox(S2,V2,x,y,z,COL.reveal,.4);
   }
 }
 
 
 
 
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-// SOUND SYSTEM \u2014 Web Audio API, Star Wars feel
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// ══════════════════════════════════════════════════════
+// SOUND SYSTEM — Web Audio API, Star Wars feel
+// ══════════════════════════════════════════════════════
 let soundOn = true;
 let _actx = null;
 function actx(){ return _actx || (_actx = new (window.AudioContext||window.webkitAudioContext)()); }
 function toggleSound(){
   soundOn=!soundOn;
   const b=document.getElementById('snd-btn');
-  if(b){b.textContent=soundOn?'\uD83D\uDD0A':'\uD83D\uDD07';b.className='snd-btn'+(soundOn?'':' off');}
+  if(b){b.textContent=soundOn?'🔊':'🔇';b.className='snd-btn'+(soundOn?'':' off');}
+  if(soundOn&&bgMusicOn){ try{ musicNextTime=actx().currentTime+0.1; }catch(e){} }
 }
 function _osc(type,f0,f1,dur,vol=0.25){
   if(!soundOn) return;
@@ -867,9 +777,9 @@ function _noise(dur,cutoff=600,vol=0.4){
     src.start(); src.stop(c.currentTime+dur+0.01);
   }catch(e){}
 }
-function sndLaser(){ _osc('sawtooth',1200,80,0.28,0.18); }
-function sndHit(){   _noise(0.45,900,0.5); _osc('sine',180,40,0.3,0.12); }
-function sndMiss(){  _osc('sine',200,55,0.35,0.12); }
+function sndLaser(){ _osc('sawtooth',1500,55,0.55,0.17); _osc('square',760,35,0.42,0.09); }
+function sndHit(){   _noise(0.75,900,0.5); _osc('sine',190,35,0.55,0.14); }
+function sndMiss(){  _osc('sine',220,50,0.6,0.13); }
 function sndNear(){  _osc('triangle',550,700,0.1,0.1); setTimeout(()=>_osc('triangle',700,400,0.15,0.08),110); }
 function sndSunk(){
   const c=actx(); const notes=[440,554,659,880];
@@ -906,18 +816,92 @@ function sndDefeat(){
 function sndClick(){ _osc('sine',800,800,.06,.08); }
 function sndBot(){ _osc('sawtooth',600,200,.2,.1); }
 
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// ══════════════════════════════════════════════════════
+// BACKGROUND MUSIC — procedural march loop (no audio files)
+// ══════════════════════════════════════════════════════
+const MUSIC_BPM=108;
+const MUSIC_BEAT=60/MUSIC_BPM;
+// 2-bar minor-key march motif, one entry per eighth note (0 = rest)
+const MARCH_MEL =[220,0,262,220, 196,0,220,262, 330,0,294,262, 220,196,175,0,
+                   220,0,262,220, 196,0,220,262, 349,0,330,294, 262,0,220,0];
+const MARCH_BASS=[110,0,0,110,  98,0,0,98,   110,0,0,110,  98,0,87,0,
+                   110,0,0,110,  98,0,0,98,   131,0,0,131,  110,0,98,0];
+
+let bgMusicOn=false, musicStep=0, musicNextTime=0, musicTimerId=null;
+
+function scheduleNote(freq,time,dur,type,vol){
+  if(!freq) return;
+  try{
+    const c=actx(), o=c.createOscillator(), g=c.createGain();
+    o.type=type; o.frequency.setValueAtTime(freq,time);
+    o.connect(g); g.connect(c.destination);
+    g.gain.setValueAtTime(0.0001,time);
+    g.gain.exponentialRampToValueAtTime(vol,time+0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001,time+dur);
+    o.start(time); o.stop(time+dur+0.03);
+  }catch(e){}
+}
+function scheduleDrum(time,vol){
+  try{
+    const c=actx();
+    const buf=c.createBuffer(1,Math.max(1,c.sampleRate*0.15),c.sampleRate);
+    const d=buf.getChannelData(0);
+    for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,2);
+    const src=c.createBufferSource(), flt=c.createBiquadFilter(), g=c.createGain();
+    src.buffer=buf; flt.type='lowpass'; flt.frequency.value=180;
+    src.connect(flt); flt.connect(g); g.connect(c.destination);
+    g.gain.setValueAtTime(vol,time);
+    g.gain.exponentialRampToValueAtTime(0.001,time+0.15);
+    src.start(time); src.stop(time+0.16);
+  }catch(e){}
+}
+function musicScheduler(){
+  if(!bgMusicOn){ musicTimerId=null; return; }
+  if(!soundOn){ musicTimerId=setTimeout(musicScheduler,250); return; }
+  try{
+    const c=actx();
+    while(musicNextTime < c.currentTime+0.6){
+      const i=musicStep%MARCH_MEL.length;
+      const t=musicNextTime;
+      scheduleNote(MARCH_MEL[i], t, MUSIC_BEAT*0.42, 'square', 0.05);
+      scheduleNote(MARCH_BASS[i], t, MUSIC_BEAT*0.9, 'sawtooth', 0.045);
+      if(i%8===0) scheduleDrum(t, 0.11);
+      musicNextTime += MUSIC_BEAT*0.5;
+      musicStep++;
+    }
+  }catch(e){}
+  musicTimerId=setTimeout(musicScheduler,150);
+}
+function startBgMusic(){
+  if(bgMusicOn) return;
+  bgMusicOn=true;
+  try{
+    const c=actx();
+    if(c.state==='suspended') c.resume();
+    musicNextTime=c.currentTime+0.1;
+  }catch(e){ musicNextTime=0.1; }
+  musicStep=0;
+  musicScheduler();
+}
+function stopBgMusic(){
+  bgMusicOn=false;
+  if(musicTimerId){ clearTimeout(musicTimerId); musicTimerId=null; }
+}
+// Browsers require a user gesture before audio can play — start on first tap/click anywhere.
+window.addEventListener('pointerdown', ()=>{ if(!bgMusicOn) startBgMusic(); }, {once:true});
+
+// ══════════════════════════════════════════════════════
 // GAME COUNT + TUTORIAL MODE
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// ══════════════════════════════════════════════════════
 let gameCount = 0;
 const TUTORIAL_GAMES = 10;
 const TUTORIAL_G = 5;
 const TUTORIAL_SHIP_TYPES = [
-  {size:4, count:1, name:'\u0424\u043B\u0430\u0433\u043C\u0430\u043D'},
-  {size:3, count:2, name:'\u041A\u0440\u0435\u0439\u0441\u0435\u0440'},
-  {size:2, count:3, name:'\u041F\u0430\u0442\u0440\u0443\u043B\u044C'},
+  {size:4, count:1, name:'Флагман'},
+  {size:3, count:2, name:'Крейсер'},
+  {size:2, count:3, name:'Патруль'},
 ];
-// Tutorial: 4+6+6=16 cells in 5\u00B3=125 \u2192 12.8% \u2713
+// Tutorial: 4+6+6=16 cells in 5³=125 → 12.8% ✓
 
 function isTut(){ return gameCount < TUTORIAL_GAMES; }
 function getActiveTypes(){ return isTut() ? TUTORIAL_SHIP_TYPES : SHIP_TYPES; }
@@ -942,9 +926,9 @@ function updateMenuProgress(){
   }
   if(note){
     if(gameCount<TUTORIAL_GAMES)
-      note.textContent='\u041E\u0411\u0423\u0427\u0415\u041D\u0418\u0415: \u0418\u0413\u0420\u0410 '+(gameCount+1)+' \u0418\u0417 '+TUTORIAL_GAMES;
+      note.textContent='ОБУЧЕНИЕ: ИГРА '+(gameCount+1)+' ИЗ '+TUTORIAL_GAMES;
     else
-      note.textContent='\u2705 \u041E\u0411\u0423\u0427\u0415\u041D\u0418\u0415 \u041F\u0420\u041E\u0419\u0414\u0415\u041D\u041E \u2014 \u041F\u041E\u041B\u041D\u042B\u0419 \u0420\u0415\u0416\u0418\u041C';
+      note.textContent='✅ ОБУЧЕНИЕ ПРОЙДЕНО — ПОЛНЫЙ РЕЖИМ';
   }
 }
 
@@ -961,30 +945,30 @@ function rebuildSelects(){
   for(let i=0;i<G;i++){
     const o=document.createElement('option'); o.value=i; o.textContent=G-i; sy.appendChild(o);
   }
-  ROM.slice(0,G).forEach((r,i)=>{
+  [...ROM].reverse().slice(0,G).forEach((r,i)=>{
     const o=document.createElement('option'); o.value=i; o.textContent=r; sz.appendChild(o);
   });
 }
 
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// ══════════════════════════════════════════════════════
 // TUTORIAL OVERLAY STEPS
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// ══════════════════════════════════════════════════════
 const TUT = [
-  {icon:'\u2699',
-   title:'\u0414\u041E\u0411\u0420\u041E \u041F\u041E\u0416\u0410\u041B\u041E\u0412\u0410\u0422\u042C \u0412 STAR GRID',
-   body:'\u041E\u0431\u0443\u0447\u0435\u043D\u0438\u0435: \u043A\u0443\u0431 5\u00D75\u00D75, 6 \u043A\u043E\u0440\u0430\u0431\u043B\u0435\u0439. \u041F\u043E\u043B\u043D\u044B\u0439 \u0440\u0435\u0436\u0438\u043C \u043E\u0442\u043A\u0440\u043E\u0435\u0442\u0441\u044F \u043F\u043E\u0441\u043B\u0435 10 \u0438\u0433\u0440. \u0422\u0432\u043E\u044F \u0446\u0435\u043B\u044C \u2014 \u0443\u043D\u0438\u0447\u0442\u043E\u0436\u0438\u0442\u044C \u0432\u0441\u0435 \u043A\u043E\u0440\u0430\u0431\u043B\u0438 \u043F\u0440\u043E\u0442\u0438\u0432\u043D\u0438\u043A\u0430 \u0432 \u0442\u0440\u0451\u0445\u043C\u0435\u0440\u043D\u043E\u043C \u043F\u0440\u043E\u0441\u0442\u0440\u0430\u043D\u0441\u0442\u0432\u0435.'},
-  {icon:'\uD83D\uDDFA',
-   title:'\u041A\u0410\u041A \u0423\u0421\u0422\u0420\u041E\u0415\u041D \u041A\u0423\u0411',
-   body:'\u0422\u0440\u0438 \u043E\u0441\u0438. X = \u0431\u0443\u043A\u0432\u0430 (A\u2013E). Y = \u0447\u0438\u0441\u043B\u043E (1\u20135). Z = \u0440\u0438\u043C\u0441\u043A\u0430\u044F (V\u2013I). \u041A\u0430\u0436\u0434\u0430\u044F \u0442\u043E\u0447\u043A\u0430 \u0432 \u043F\u0440\u043E\u0441\u0442\u0440\u0430\u043D\u0441\u0442\u0432\u0435 \u2014 \u044D\u0442\u043E \u0442\u0440\u0438 \u043A\u043E\u043E\u0440\u0434\u0438\u043D\u0430\u0442\u044B. \u041A\u0443\u0431 \u043C\u043E\u0436\u043D\u043E \u0432\u0440\u0430\u0449\u0430\u0442\u044C \u043F\u0430\u043B\u044C\u0446\u0435\u043C.'},
-  {icon:'\u2693',
-   title:'\u0420\u0410\u0421\u0421\u0422\u0410\u041D\u041E\u0412\u041A\u0410 \u0424\u041B\u041E\u0422\u0410',
-   body:'\u0412\u044B\u0431\u0435\u0440\u0438 \u0442\u0438\u043F \u043A\u043E\u0440\u0430\u0431\u043B\u044F \u043D\u0438\u0436\u0435. \u0412\u044B\u0431\u0435\u0440\u0438 \u043D\u0430\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u0435 \u2192 X / \u2191 Y / \u2299 Z. \u0422\u0430\u043F\u043D\u0438 \u043F\u043E \u0441\u0432\u043E\u0435\u043C\u0443 \u043A\u0443\u0431\u0443 (\u043B\u0435\u0432\u044B\u0439) \u2014 \u043A\u043E\u0440\u0430\u0431\u043B\u044C \u0432\u0441\u0442\u0430\u043D\u0435\u0442 \u0442\u0443\u0434\u0430. \u0417\u0435\u043B\u0451\u043D\u044B\u0439 \u043F\u0440\u0438\u0437\u0440\u0430\u043A = \u043C\u043E\u0436\u043D\u043E. \u041A\u0440\u0430\u0441\u043D\u044B\u0439 = \u043D\u0435\u0442.'},
-  {icon:'\uD83C\uDFAF',
-   title:'\u041A\u0410\u041A \u0410\u0422\u0410\u041A\u041E\u0412\u0410\u0422\u042C',
-   body:'\u0412\u044B\u0431\u0435\u0440\u0438 X, Y, Z \u0432 \u043D\u0438\u0436\u043D\u0438\u0445 \u0441\u043F\u0438\u0441\u043A\u0430\u0445 \u0438 \u043D\u0430\u0436\u043C\u0438 \u041E\u0413\u041E\u041D\u042C. \uD83D\uDD34 \u041A\u0440\u0430\u0441\u043D\u044B\u0439 = \u043F\u043E\u043F\u0430\u0434\u0430\u043D\u0438\u0435, \u0441\u0442\u0440\u0435\u043B\u044F\u0439 \u0435\u0449\u0451! \uD83D\uDFE1 \u0416\u0451\u043B\u0442\u044B\u0439 = \u0440\u044F\u0434\u043E\u043C \u0441 \u043A\u043E\u0440\u0430\u0431\u043B\u0451\u043C. \u26AA \u0411\u0435\u043B\u044B\u0439 = \u043F\u0440\u043E\u043C\u0430\u0445.'},
-  {icon:'\uD83D\uDEE1',
-   title:'\u0417\u041E\u041D\u0410 \u0411\u0415\u0417\u041E\u041F\u0410\u0421\u041D\u041E\u0421\u0422\u0418',
-   body:'\u041A\u043E\u0433\u0434\u0430 \u043A\u043E\u0440\u0430\u0431\u043B\u044C \u043F\u043E\u0442\u043E\u043F\u043B\u0435\u043D \u043F\u043E\u043B\u043D\u043E\u0441\u0442\u044C\u044E \u2014 \u0432\u043E\u043A\u0440\u0443\u0433 \u043D\u0435\u0433\u043E \u0441\u0432\u0435\u0442\u043B\u0435\u0435\u0442 \u0437\u043E\u043D\u0430. \u041A\u043E\u0440\u0430\u0431\u043B\u0435\u0439 \u0442\u0430\u043C \u043D\u0435\u0442 \u043F\u043E \u043F\u0440\u0430\u0432\u0438\u043B\u0430\u043C \u0438\u0433\u0440\u044B \u2014 \u0442\u0443\u0434\u0430 \u043C\u043E\u0436\u043D\u043E \u043D\u0435 \u0441\u0442\u0440\u0435\u043B\u044F\u0442\u044C.'},
+  {icon:'⚙',
+   title:'ДОБРО ПОЖАЛОВАТЬ В STAR GRID',
+   body:'Обучение: куб 5×5×5, 6 кораблей. Полный режим откроется после 10 игр. Твоя цель — уничтожить все корабли противника в трёхмерном пространстве.'},
+  {icon:'🗺',
+   title:'КАК УСТРОЕН КУБ',
+   body:'Три оси. X = буква (A–E). Y = число (1–5). Z = римская (V–I). Каждая точка в пространстве — это три координаты. Куб можно вращать пальцем.'},
+  {icon:'⚓',
+   title:'РАССТАНОВКА ФЛОТА',
+   body:'Выбери тип корабля ниже. Тапни по своему кубу (левый) — корабль встанет туда. Хочешь развернуть его — тапни и коротко свайпни в сторону, вдоль нужной оси. Или жми 🎲 АВТО — расставит всё сама.'},
+  {icon:'🎯',
+   title:'КАК АТАКОВАТЬ',
+   body:'Просто тапни по клетке на вражеском кубе (правый) — это и есть выстрел. 🔴 Красный = попадание, стреляй ещё! 🟡 Жёлтый = рядом с кораблём. ⚪ Белый = промах. Кнопка СКАН переключает в режим сканирования.'},
+  {icon:'🛡',
+   title:'ЗОНА БЕЗОПАСНОСТИ',
+   body:'Когда корабль потоплен полностью — вокруг него светлеет зона. Кораблей там нет по правилам игры — туда можно не стрелять.'},
 ];
 let tutStep=0, tutQueue=[], tutCallback=null;
 
@@ -995,11 +979,11 @@ function showTut(steps, cb=null){
 function _showTutStep(){
   if(tutStep>=tutQueue.length){ document.getElementById('tut').classList.remove('on'); if(tutCallback) tutCallback(); return; }
   const s=tutQueue[tutStep];
-  document.getElementById('tut-icon').textContent=s.icon||'\u2699';
+  document.getElementById('tut-icon').textContent=s.icon||'⚙';
   document.getElementById('tut-title').textContent=s.title;
   document.getElementById('tut-body').textContent=s.body;
   const prog=document.getElementById('tut-prog');
-  if(tutQueue.length>1) prog.textContent='\u0428\u0410\u0413 '+(tutStep+1)+' / '+tutQueue.length;
+  if(tutQueue.length>1) prog.textContent='ШАГ '+(tutStep+1)+' / '+tutQueue.length;
   else prog.textContent='';
   document.getElementById('tut').classList.add('on');
 }
@@ -1010,15 +994,15 @@ function closeTut(){ document.getElementById('tut').classList.remove('on'); if(t
 let shownSunkTip=false;
 
 
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-// ONLINE MODE \u2014 Socket.io client
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// ══════════════════════════════════════════════════════════
+// ONLINE MODE — Socket.io client
+// ══════════════════════════════════════════════════════════
 let sock        = null;
 let onlineMode  = false;
 let myRole      = -1;      // 0 = player1 (shoots first), 1 = player2
 let myRoomId    = null;
 let onlineTurn  = false;   // true when it's our turn in online mode
-let onlineResultMap = {};  // 'x,y,z' -> {result,sunkCells}
+let onlineResultMap = {};  // 'x,y,z' → {result,sunkCells}
 
 function olUI(show){ document.getElementById('online-ui').classList[show?'add':'remove']('on'); }
 function olSet(icon, title, body){
@@ -1028,45 +1012,46 @@ function olSet(icon, title, body){
 }
 
 function startOnline(){
-  if(!window.io){ olUI(true); olSet('\u2699','\u0417\u0410\u0413\u0420\u0423\u0417\u041A\u0410...','\u041F\u043E\u0434\u043A\u043B\u044E\u0447\u0430\u0435\u043C\u0441\u044F \u043A \u0441\u0435\u0440\u0432\u0435\u0440\u0443...'); }
+  if(!window.io){ olUI(true); olSet('⚙','ЗАГРУЗКА...','Подключаемся к серверу...'); }
   setTimeout(connectSocket, window.io?0:1200);
 }
 
 function connectSocket(){
-  if(!window.io){ olUI(true); olSet('\u26A0','\u041D\u0415\u0422 \u0421\u0415\u0422\u0418','\u041E\u0442\u043A\u0440\u043E\u0439\u0442\u0435 \u0438\u0433\u0440\u0443 \u0447\u0435\u0440\u0435\u0437 \u0441\u0435\u0440\u0432\u0435\u0440 (\u043D\u0435 file://)'); return; }
-  olUI(true); olSet('\u2699','\u041F\u041E\u0418\u0421\u041A \u0421\u041E\u041F\u0415\u0420\u041D\u0418\u041A\u0410','\u041F\u043E\u0434\u043A\u043B\u044E\u0447\u0430\u0435\u043C\u0441\u044F...');
+  if(!window.io){ olUI(true); olSet('⚠','НЕТ СЕТИ','Откройте игру через сервер (не file://)'); return; }
+  olUI(true); olSet('⚙','ПОИСК СОПЕРНИКА','Подключаемся...');
 
-  if(sock && sock.connected){ sock.emit('find_match',{name:'\u041F\u0438\u043B\u043E\u0442'}); return; }
+  if(sock && sock.connected){ sock.emit('find_match',{name:'Пилот'}); return; }
   if(sock){ sock.disconnect(); }
 
   sock = io(window.location.origin, {transports:['websocket','polling']});
 
   sock.on('connect',()=>{
-    olSet('\uD83D\uDD0D','\u041F\u041E\u0418\u0421\u041A \u0421\u041E\u041F\u0415\u0420\u041D\u0418\u041A\u0410','\u0418\u0449\u0435\u043C \u0441\u043E\u043F\u0435\u0440\u043D\u0438\u043A\u0430...');
-    sock.emit('find_match',{name:'\u041F\u0438\u043B\u043E\u0442'});
+    olSet('🔍','ПОИСК СОПЕРНИКА','Ищем соперника в галактике...');
+    sock.emit('find_match',{name:'Пилот'});
   });
-  sock.on('connect_error',()=>{ olSet('\u26A0','\u041E\u0428\u0418\u0411\u041A\u0410','\u0421\u0435\u0440\u0432\u0435\u0440 \u043D\u0435\u0434\u043E\u0441\u0442\u0443\u043F\u0435\u043D.'); });
-  sock.on('waiting',({n})=>{ olSet('\uD83D\uDD0D','\u041F\u041E\u0418\u0421\u041A \u0421\u041E\u041F\u0415\u0420\u041D\u0418\u041A\u0410','\u0412 \u043E\u0447\u0435\u0440\u0435\u0434\u0438: '+n); });
-  sock.on('queue_size',({n})=>{ olSet('\uD83D\uDD0D','\u041F\u041E\u0418\u0421\u041A \u0421\u041E\u041F\u0415\u0420\u041D\u0418\u041A\u0410','\u0412 \u043E\u0447\u0435\u0440\u0435\u0434\u0438: '+n); });
+  sock.on('connect_error',()=>{ olSet('⚠','ОШИБКА','Сервер недоступен. Проверьте соединение.'); });
+  sock.on('waiting',({n})=>{ olSet('🔍','ПОИСК СОПЕРНИКА','В очереди: '+n+' игр'+( n===1?'а':'') +'...'); });
+  sock.on('queue_size',({n})=>{ olSet('🔍','ПОИСК СОПЕРНИКА','В очереди: '+n+' игр'+(n===1?'а':'')+'...'); });
 
   sock.on('match_found',({roomId,role,opponentName})=>{
     myRoomId=roomId; myRole=role;
-    olSet('\u2726','\u0421\u041E\u041F\u0415\u0420\u041D\u0418\u041A \u041D\u0410\u0419\u0414\u0415\u041D','\u041F\u0440\u043E\u0442\u0438\u0432: '+(opponentName||'\u041F\u0438\u043B\u043E\u0442'));
+    olSet('✦','СОПЕРНИК НАЙДЕН','Против: '+(opponentName||'Пилот')+'\nРасставляйте флот!');
     setTimeout(()=>{ olUI(false); initOnlineGame(); }, 1400);
   });
 
   sock.on('opponent_ready',()=>{
     if(!onlineMode) return;
-    setMsg('\u231B \u0421\u043E\u043F\u0435\u0440\u043D\u0438\u043A \u0433\u043E\u0442\u043E\u0432. \u0416\u0434\u0451\u043C \u0432\u0430\u0441...','#4488ff');
+    setMsg('⌛ Соперник готов. Ждём вас...','#4488ff');
   });
 
   sock.on('battle_start',({first})=>{
     onlineTurn = (first===myRole);
     turn = onlineTurn?'p':'e';
     updateUI();
-    setMsg(onlineTurn?'\uD83C\uDFAF \u0412\u0430\u0448 \u0445\u043E\u0434!':'\u23F3 \u0421\u043E\u043F\u0435\u0440\u043D\u0438\u043A \u0445\u043E\u0434\u0438\u0442 \u043F\u0435\u0440\u0432\u044B\u043C...','#00cc55');
+    setMsg(onlineTurn?'🎯 Ваш ход — первым открываете огонь!':'⏳ Соперник ходит первым...','#00cc55');
   });
 
+  // Opponent shot at us — validate and respond
   sock.on('incoming_shot',({x,y,z})=>{
     const k=x+','+y+','+z;
     eShots.add(k);
@@ -1076,6 +1061,7 @@ function connectSocket(){
     const pTot=totalCells(pGrid), pH=hitCells(eShots,pGrid);
     const sunkNow=getSunk(eShots,pGrid);
     const gameOver=pH>=pTot;
+    // Collect sunk ship cells to send back (for safe zone display)
     let sunkCells=[];
     if(sunkNow.length){
       const ss=new Set(sunkNow);
@@ -1087,45 +1073,46 @@ function connectSocket(){
     if(gameOver){ endGame(false); return; }
     if(isHit){
       sndBot(); sndHit();
-      addLog('\u0421\u043E\u043F\u0435\u0440\u043D\u0438\u043A: '+cStr(x,y,z)+' -> \uD83D\uDCA5 \u043F\u043E\u043F\u0430\u043B!','b');
-      if(sunkNow.length) addLog('\uD83D\uDD25 \u041D\u0430\u0448 \u043A\u043E\u0440\u0430\u0431\u043B\u044C \u043F\u043E\u0442\u043E\u043F\u043B\u0435\u043D!','y');
-      setMsg('\uD83D\uDCA5 \u0421\u043E\u043F\u0435\u0440\u043D\u0438\u043A \u043F\u043E\u043F\u0430\u043B!','#ff3322');
+      addLog('Соперник: '+cStr(x,y,z)+' → 💥 попал!','b');
+      if(sunkNow.length) addLog('🔥 Наш корабль потоплен!','y');
+      setMsg('💥 Соперник попал! Его ход продолжается.','#ff3322');
       turn='e'; updateUI();
     } else {
       sndMiss();
-      addLog('\u0421\u043E\u043F\u0435\u0440\u043D\u0438\u043A: '+cStr(x,y,z)+' -> \u043F\u0440\u043E\u043C\u0430\u0445','b');
+      addLog('Соперник: '+cStr(x,y,z)+' → промах','b');
       turn='p'; onlineTurn=true; updateUI();
-      setMsg('\uD83D\uDCA8 \u0421\u043E\u043F\u0435\u0440\u043D\u0438\u043A \u043F\u0440\u043E\u043C\u0430\u0445\u043D\u0443\u043B\u0441\u044F \u2014 \u0432\u0430\u0448 \u0445\u043E\u0434!','#00cc55');
+      setMsg('💨 Соперник промахнулся — ваш ход!','#00cc55');
     }
   });
 
+  // Our shot result came back from opponent
   sock.on('shot_result',({x,y,z,result,sunkCells,gameOver})=>{
     const k=x+','+y+','+z;
     onlineResultMap[k]={result,sunkCells:sunkCells||[]};
     renderE();
     if(result==='hit'){
       sndHit(); hitCount++;
-      addLog(cStr(x,y,z)+' -> \uD83D\uDCA5 \u041F\u041E\u041F\u0410\u0414\u0410\u041D\u0418\u0415!','h');
-      if(sunkCells&&sunkCells.length) { sndSunk(); addLog('\uD83D\uDD25 \u041A\u043E\u0440\u0430\u0431\u043B\u044C \u043F\u043E\u0442\u043E\u043F\u043B\u0435\u043D!','y'); }
+      addLog(cStr(x,y,z)+' → 💥 ПОПАДАНИЕ!','h');
+      if(sunkCells&&sunkCells.length) { sndSunk(); addLog('🔥 Корабль потоплен!','y'); }
       if(gameOver){ endGame(true); return; }
       turn='p'; onlineTurn=true; updateUI();
-      setMsg('\uD83D\uDCA5 \u041F\u041E\u041F\u0410\u0414\u0410\u041D\u0418\u0415! \u0421\u0442\u0440\u0435\u043B\u044F\u0439\u0442\u0435 \u0435\u0449\u0451!','#ff2200');
+      setMsg('💥 ПОПАДАНИЕ! Стреляйте ещё!','#ff2200');
     } else if(result==='near'){
       sndNear();
-      addLog(cStr(x,y,z)+' -> \uD83D\uDFE1 \u0420\u044F\u0434\u043E\u043C','n');
+      addLog(cStr(x,y,z)+' → 🟡 Рядом','n');
       turn='e'; onlineTurn=false; updateUI();
-      setMsg('\uD83D\uDFE1 \u0420\u044F\u0434\u043E\u043C \u2014 \u043F\u0440\u043E\u043C\u0430\u0445.','#997700');
+      setMsg('🟡 Рядом — промах. Ход соперника.','#997700');
     } else {
       sndMiss();
-      addLog(cStr(x,y,z)+' -> \uD83D\uDCA8 \u041F\u0440\u043E\u043C\u0430\u0445','m');
+      addLog(cStr(x,y,z)+' → 💨 Промах','m');
       turn='e'; onlineTurn=false; updateUI();
-      setMsg('\uD83D\uDCA8 \u041F\u0440\u043E\u043C\u0430\u0445. \u0425\u043E\u0434 \u0441\u043E\u043F\u0435\u0440\u043D\u0438\u043A\u0430...','#3355cc');
+      setMsg('💨 Промах. Ход соперника...','#3355cc');
     }
     shotCount++;
   });
 
   sock.on('opponent_left',()=>{
-    setMsg('\u26A0\uFE0F \u0421\u043E\u043F\u0435\u0440\u043D\u0438\u043A \u043F\u043E\u043A\u0438\u043D\u0443\u043B \u0438\u0433\u0440\u0443!','#00ff66');
+    setMsg('⚠️ Соперник покинул игру. Победа засчитана!','#00ff66');
     if(!isOver) endGame(true);
   });
   sock.on('game_over',({winner})=>{
@@ -1138,7 +1125,7 @@ function initOnlineGame(){
   G=isTut()?TUTORIAL_G:10;
   CAM.forEach(c=>c.R=G*2.8);
   shownSunkTip=false;
-  pGrid=mk3(); eGrid=mk3();
+  pGrid=mk3(); eGrid=mk3(); // eGrid stays empty in online (we don't know opponent's layout)
   pShots=new Set(); eShots=new Set();
   scanResults=[]; scanTick=0;
   isOver=false; shotCount=0; hitCount=0; bonusShot=superCube;
@@ -1146,7 +1133,6 @@ function initOnlineGame(){
   showScr('s-battle');
   initThree(); renderP(); renderE();
   enterPlacement();
-  gaEvent('game_start',{mode:'online'});
 }
 
 function cancelOnline(){
@@ -1155,8 +1141,11 @@ function cancelOnline(){
   onlineMode=false;
 }
 
+
+// ═══════════════════════════════════════════
 // PLACEMENT DIRECTION + TRACKER
-let placeDir='x';
+// ═══════════════════════════════════════════
+let placeDir='x'; // 'x' | 'y' | 'z'
 
 function setDir(d){
   placeDir=d;
@@ -1169,6 +1158,7 @@ function setDir(d){
 
 function updateTracker(){
   const sunkIds=new Set(getSunk(pShots,eGrid));
+  // Which IDs have any hits?
   const hitIds=new Set();
   for(const k of pShots){
     const [x,y,z]=k.split(',').map(Number);
@@ -1179,8 +1169,9 @@ function updateTracker(){
   if(!el) return;
   el.innerHTML='';
   let total=0, sunkCount=0;
+  // Get IDs per type in order
   let id=1;
-  for(const t of getActiveTypes()){
+  for(const t of SHIP_TYPES){
     const row=document.createElement('div');
     row.className='trk-row';
     const lbl=document.createElement('span');
@@ -1193,7 +1184,7 @@ function updateTracker(){
       const dot=document.createElement('span');
       const sunk=sunkIds.has(id), hit=hitIds.has(id)&&!sunk;
       dot.className='trk-dot'+(sunk?' td-sunk':hit?' td-hit':'');
-      dot.title=(sunk?'\u041F\u043E\u0442\u043E\u043F\u043B\u0435\u043D':hit?'\u041F\u043E\u0432\u0440\u0435\u0436\u0434\u0451\u043D':'\u0426\u0435\u043B')+': '+t.name;
+      dot.title=(sunk?'Потоплен':hit?'Повреждён':'Цел')+': '+t.name+' ('+t.size+' кл)';
       ships.appendChild(dot);
       total++; if(sunk) sunkCount++;
       id++;
@@ -1202,27 +1193,25 @@ function updateTracker(){
     el.appendChild(row);
   }
   const sum=document.getElementById('trk-sum');
-  if(sum) sum.textContent='\u041F\u043E\u0442\u043E\u043F\u043B\u0435\u043D\u043E: '+sunkCount+' / '+total;
+  if(sum) sum.textContent='Потоплено: '+sunkCount+' / '+total;
 }
 
+// ═══════════════════════════════════════════
 // SHIP PLACEMENT MODE
+// ═══════════════════════════════════════════
 let inPlacement=false, toPlace=[], selSize=0, placeId=1;
 
 function enterPlacement(){
   inPlacement=true; pGrid=mk3();
-  buildShipTypeById();
-  rebuildSelects();
+  document.querySelector('.coord-row').style.display='none';
   toPlace=[...getFlatFleet()]; placeId=1;
   selSize=toPlace[0];
-  placeDir='x'; setDir('x');
   document.getElementById('place-ui').style.display='block';
-  document.getElementById('fire-btn').textContent='\uD83D\uDCCD \u041F\u041E\u0421\u0422\u0410\u0412\u0418\u0422\u042C';
-  document.getElementById('scan-btn').textContent='\uD83C\uDFB2 \u0410\u0412\u0422\u041E';
+  document.getElementById('fire-btn').textContent='📍 ПОСТАВИТЬ';
+  document.getElementById('scan-btn').textContent='🎲 АВТО (все оставшиеся)';
   document.getElementById('ready-btn').style.display='none';
   updateChips();
-  updateTracker();
-  setMsg('\uD83D\uDE80 \u0420\u0430\u0441\u0441\u0442\u0430\u0432\u044C\u0442\u0435 \u043A\u043E\u0440\u0430\u0431\u043B\u0438.','#00aa44');
-  if(isTut()) setTimeout(()=>showTut([TUT[0],TUT[1],TUT[2]],null),300);
+  setMsg('🚀 Выберите тип корабля и тапните по кубу — свайп задаёт направление.','#00aa44');
 }
 
 function updateChips(){
@@ -1232,40 +1221,42 @@ function updateChips(){
   Object.entries(cnt).sort((a,b)=>b[0]-a[0]).forEach(([s,n])=>{
     const b=document.createElement('button');
     b.className='chip'+(parseInt(s)===selSize?' active':'');
-    b.textContent=s+' x'+n;
+    b.textContent=s+'³ ×'+n;
     b.onclick=()=>{selSize=parseInt(s);updateChips();renderP();};
     el.appendChild(b);
   });
+  // Placed ships summary
   const done=getFlatFleet().length-toPlace.length;
   document.getElementById('place-note').textContent=
-    done>0?'\u041F\u043E\u0441\u0442\u0430\u0432\u043B\u0435\u043D\u043E: '+done+'. \u041E\u0441\u0442\u0430\u043B\u043E\u0441\u044C: '+toPlace.length
-    :'\u0412\u044B\u0431\u0435\u0440\u0438\u0442\u0435 \u043A\u043E\u0440\u0430\u0431\u043B\u044C \u0438 \u043A\u043E\u043E\u0440\u0434\u0438\u043D\u0430\u0442\u044B';
+    done>0?'✅ П;о;с;т;а;в;л;е;н;о;: '+done+' кораблей. Осталось: '+toPlace.length
+    :'Выберите корабль и укажите координаты';
 }
 
 function placeAtCoords(){
   if(!inPlacement||toPlace.length===0) return;
   if(!selSize||toPlace.indexOf(selSize)===-1){
-    setMsg('\u26A0\uFE0F \u0412\u044B\u0431\u0435\u0440\u0438\u0442\u0435 \u0442\u0438\u043F \u043A\u043E\u0440\u0430\u0431\u043B\u044F','#886600'); return;
+    setMsg('⚠️ Выберите тип корабля','#886600'); return;
   }
   const [x,y,z]=getXYZ();
   if(!canPlaceLinear(pGrid,x,y,z,selSize,placeDir)){
-    setMsg('\u274C \u041D\u0435\u043B\u044C\u0437\u044F','#cc2200'); return;
+    setMsg('❌ Нельзя — за границей или касается другого корабля','#cc2200'); return;
   }
   placeLinear(pGrid,x,y,z,selSize,placeDir,placeId++);
   const idx=toPlace.indexOf(selSize); toPlace.splice(idx,1);
   if(toPlace.length>0){
     selSize=toPlace.includes(selSize)?selSize:toPlace[0];
     updateChips(); renderP();
-    setMsg('\u2705 \u041F\u043E\u0441\u0442\u0430\u0432\u043B\u0435\u043D\u043E! \u041E\u0441\u0442\u0430\u043B\u043E\u0441\u044C: '+toPlace.length,'#00aa44');
+    setMsg('✅ Поставлено! Осталось: '+toPlace.length,'#00aa44');
   } else {
     renderP();
     document.getElementById('ready-btn').style.display='inline-block';
-    setMsg('\u2705 \u0412\u0441\u0435 \u043A\u043E\u0440\u0430\u0431\u043B\u0438 \u0440\u0430\u0441\u0441\u0442\u0430\u0432\u043B\u0435\u043D\u044B!','#00ff66');
+    setMsg('✅ Все корабли расставлены! Нажмите НАЧ;А;Т;Ь; БОЙ','#00ff66');
     updateChips();
   }
 }
 
 function autoPlaceRemaining(){
+  // Auto-place remaining ships from toPlace[] using linear placement
   const dirs=['x','y','z'];
   for(const size of toPlace){
     let placed=false,tries=0;
@@ -1287,14 +1278,14 @@ function autoPlaceRemaining(){
   toPlace=[]; selSize=0;
   updateChips(); renderP();
   document.getElementById('ready-btn').style.display='inline-block';
-  setMsg('\uD83C\uDFB2 \u0410\u0432\u0442\u043E\u0440\u0430\u0441\u0441\u0442\u0430\u043D\u043E\u0432\u043A\u0430 \u0437\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u0430!','#00ff66');
+  setMsg('🎲 Авторасстановка завершена! Нажмите НАЧАТЬ БОЙ','#00ff66');
 }
 
 function resetPlacement(){
   pGrid=mk3(); toPlace=[...getFlatFleet()]; placeId=1; selSize=toPlace[0];
   updateChips(); renderP();
   document.getElementById('ready-btn').style.display='none';
-  setMsg('\u21A9 \u0421\u0431\u0440\u043E\u0448\u0435\u043D\u043E.','#886600');
+  setMsg('↩ Сброшено. Расставьте заново.','#886600');
 }
 
 function finishPlacement(){
@@ -1302,37 +1293,42 @@ function finishPlacement(){
   if(isTut()) setTimeout(()=>showTut([TUT[3]]),400);
   if(onlineMode){
     document.getElementById('place-ui').style.display='none';
-    document.getElementById('fire-btn').innerHTML='\u26A1<br>\u041E\u0413\u041E\u041D\u042C';
-    document.getElementById('scan-btn').textContent='\uD83D\uDD0D \u0421\u041A\u0410\u041D';
+    document.getElementById('fire-btn').innerHTML='⚡<br>ОГОНЬ';
+    document.getElementById('scan-btn').innerHTML='🔍<br>СКАН';
+    setBattleMode('fire');
     sock.emit('placement_ready');
-    setMsg('\u231B \u0424\u043B\u043E\u0442 \u0440\u0430\u0441\u0441\u0442\u0430\u0432\u043B\u0435\u043D. \u0416\u0434\u0451\u043C \u0441\u043E\u043F\u0435\u0440\u043D\u0438\u043A\u0430...','#4488ff');
+    setMsg('⌛ Флот расставлен. Ждём соперника...','#4488ff');
     document.getElementById('fire-btn').disabled=true;
     document.getElementById('scan-btn').disabled=true;
     return;
   }
   document.getElementById('place-ui').style.display='none';
-  document.getElementById('fire-btn').innerHTML='\u26A1<br>\u041E\u0413\u041E\u041D\u042C';
-  document.getElementById('scan-btn').textContent='\uD83D\uDD0D \u0421\u041A\u0410\u041D\u0418\u0420\u041E\u0412\u0410\u0422\u042C';
+  document.getElementById('fire-btn').innerHTML='⚡<br>ОГОНЬ';
+  document.getElementById('scan-btn').innerHTML='🔍<br>СКАН';
+  setBattleMode('fire');
   updateUI(); renderE();
-  setMsg('\uD83D\uDE80 \u0411\u043E\u0439 \u043D\u0430\u0447\u0430\u043B\u0441\u044F!','#00cc55');
-  gaEvent('battle_start',{mode:isTut()?'tutorial':'full'});
+  setMsg('🚀 Бой начался! Тапните по вражескому кубу, чтобы стрелять.','#00cc55');
 }
 
+// ═══════════════════════════════════════════
 // GAME FLOW
+// ═══════════════════════════════════════════
+// getFleet() replaced by getFlatFleet() — see SHIP_TYPES above
 function startGame(){
+  // Dynamic grid size: tutorial = 5×5×5, full = 10×10×10
   const wasG=G;
   G = isTut() ? TUTORIAL_G : 10;
-  if(G!==wasG) CAM.forEach(c=>c.R=G*2.8);
+  if(G!==wasG) CAM.forEach(c=>c.R=G*2.8); // scale camera distance
   shownSunkTip=false;
   pGrid=mk3(); eGrid=mk3();
   buildShipTypeById();
-  autoPlaceLinear(eGrid);
+  autoPlaceLinear(eGrid); // enemy auto-placed; player places manually
   pShots=new Set(); eShots=new Set();
   scanResults=[]; scanTick=0; huntQ=[];
   turn='p'; isOver=false; shotCount=0; hitCount=0; bonusShot=superCube;
+  document.getElementById('log').innerHTML='';
   showScr('s-battle'); initThree(); renderP(); renderE(); updateUI();
   enterPlacement();
-  gaEvent('game_start',{mode:isTut()?'tutorial':'full',game_number:gameCount+1});
 }
 function replayGame(){ if(adInterval){clearInterval(adInterval);adInterval=null;} startGame(); }
 function goMenu(){ if(raf){cancelAnimationFrame(raf);raf=null;} if(adInterval){clearInterval(adInterval);adInterval=null;} if(onlineMode&&sock){sock.disconnect();sock=null;} onlineMode=false; onlineResultMap={}; showScr('s-menu'); }
@@ -1343,9 +1339,9 @@ function updateUI(){
   document.getElementById('st-h').textContent=eH+'/'+eTot;
   document.getElementById('st-s').textContent=shotCount;
   document.getElementById('st-l').textContent=pH+'/'+pTot;
-  document.getElementById('st-sc').textContent=scanResults.length||'-';
+  document.getElementById('st-sc').textContent=scanResults.length||'—';
   const b=document.getElementById('turn-lbl');
-  b.textContent=turn==='p'?'\uD83D\uDC64 \u0412\u0410\u0428 \u0425\u041E\u0414':'\uD83E\uDD16 \u0425\u041E\u0414 \u0412\u0420\u0410\u0413\u0410';
+  b.textContent=turn==='p'?'👤 ВАШ ХОД':'🤖 ХОД ВРАГА';
   b.className='turn-b '+(turn==='p'?'tp':'te');
   const ok=turn==='p'&&!isOver;
   document.getElementById('fire-btn').disabled=!ok;
@@ -1355,16 +1351,19 @@ function addLog(t,cls){ const d=document.createElement('div'); d.textContent=t; 
 function getXYZ(){ return [parseInt(document.getElementById('sx').value),parseInt(document.getElementById('sy').value),parseInt(document.getElementById('sz').value)]; }
 function onCoordChange(){ if(!document.getElementById('s-battle').classList.contains('on')) return; if(inPlacement){renderP();}else if(!isOver){renderE();} }
 
+// ═══════════════════════════════════════════
 // PLAYER SHOOT
+// ═══════════════════════════════════════════
 function playerShoot(){
   if(inPlacement){placeAtCoords();return;}
   if(turn!=='p'||isOver) return;
   const [x,y,z]=getXYZ(), k=x+','+y+','+z;
-  if(pShots.has(k)){ setMsg('\u26A0\uFE0F \u0423\u0436\u0435 \u0441\u0442\u0440\u0435\u043B\u044F\u043B\u0438!','#886600'); return; }
+  if(pShots.has(k)){ setMsg('⚠️ '+cStr(x,y,z)+' — уже стреляли!','#886600'); return; }
   sndLaser();
   if(onlineMode){
+    // Online: send to server, wait for result
     pShots.add(k); turn='e'; onlineTurn=false; updateUI();
-    setMsg('\uD83C\uDFAF \u0412\u044B\u0441\u0442\u0440\u0435\u043B '+cStr(x,y,z)+'...','#4488ff');
+    setMsg('🎯 Выстрел '+cStr(x,y,z)+'...','#4488ff');
     sock.emit('shoot',{x,y,z});
     return;
   }
@@ -1373,30 +1372,31 @@ function playerShoot(){
   const eTot=totalCells(eGrid), eH=hitCells(pShots,eGrid);
   renderE(); updateUI();
   if(isHit){
-    sndHit(); hitCount++; addLog(cStr(x,y,z)+' -> \uD83D\uDCA5 \u041F\u041E\u041F\u0410\u0414\u0410\u041D\u0418\u0415!','h');
+    sndHit(); hitCount++; addLog(cStr(x,y,z)+' → 💥 ПОПАДАНИЕ!','h');
     if(eH>=eTot){ endGame(true); return; }
-    const nowSunk=getSunk(pShots,eGrid).length;
-    if(nowSunk){ sndSunk(); if(isTut()&&!shownSunkTip){ shownSunkTip=true; setTimeout(()=>showTut([TUT[4]]),600); } addLog('\uD83D\uDD25 \u041A\u043E\u0440\u0430\u0431\u043B\u044C \u043F\u043E\u0442\u043E\u043F\u043B\u0435\u043D!','y'); }
-    setMsg('\uD83D\uDCA5 \u041F\u041E\u041F\u0410\u0414\u0410\u041D\u0418\u0415! \u041F\u0440\u043E\u0434\u043E\u043B\u0436\u0430\u0439\u0442\u0435!','#ff2200');
+    const nowSunk=getSunk(pShots,eGrid).length; if(nowSunk){ sndSunk(); if(isTut()&&!shownSunkTip){ shownSunkTip=true; setTimeout(()=>showTut([TUT[4]]),600); } } if(nowSunk) addLog('🔥 Корабль уничтожен! Белая зона отмечена.','y');
+    setMsg('💥 ПОПАДАНИЕ! Продолжайте! ('+eH+'/'+eTot+')','#ff2200');
   } else if(isNear){
-    addLog(cStr(x,y,z)+' -> \uD83D\uDFE1 \u0420\u044F\u0434\u043E\u043C','n');
-    if(bonusShot){ bonusShot=false; setMsg('\uD83C\uDF1F \u0411\u043E\u043D\u0443\u0441 \u0432\u044B\u0441\u0442\u0440\u0435\u043B!','#cc8800'); return; }
-    setMsg('\uD83D\uDFE1 \u0420\u044F\u0434\u043E\u043C \u2014 \u043F\u0440\u043E\u043C\u0430\u0445.','#997700'); passTurn();
+    addLog(cStr(x,y,z)+' → 🟡 Рядом с кораблём','n');
+    if(bonusShot){ bonusShot=false; setMsg('🌟 Промах! Супер-куб: ещё выстрел!','#cc8800'); return; }
+    setMsg('🟡 Рядом — промах. Ход врага.','#997700'); passTurn();
   } else {
-    sndMiss(); addLog(cStr(x,y,z)+' -> \uD83D\uDCA8 \u041F\u0440\u043E\u043C\u0430\u0445','m');
-    if(bonusShot){ bonusShot=false; setMsg('\uD83C\uDF1F \u0411\u043E\u043D\u0443\u0441 \u0432\u044B\u0441\u0442\u0440\u0435\u043B!','#cc8800'); return; }
-    setMsg('\uD83D\uDCA8 \u041F\u0440\u043E\u043C\u0430\u0445.','#3355cc'); passTurn();
+    sndMiss(); addLog(cStr(x,y,z)+' → 💨 Промах','m');
+    if(bonusShot){ bonusShot=false; setMsg('🌟 Промах! Супер-куб: ещё выстрел!','#cc8800'); return; }
+    setMsg('💨 Промах. Ход переходит...','#3355cc'); passTurn();
   }
 }
 
+// ═══════════════════════════════════════════
 // PLAYER SCAN
+// ═══════════════════════════════════════════
 function playerScan(){
   if(inPlacement){autoPlaceRemaining();return;}
   if(turn!=='p'||isOver) return;
   const [x,y,z]=getXYZ(), cells=[[x,y,z]];
   const adj=face6(x,y,z).filter(([ax,ay,az])=>!pShots.has(ax+','+ay+','+az));
   if(adj.length) cells.push(adj[0|Math.random()*adj.length]);
-  let msg='\uD83D\uDD0D \u0421\u043A\u0430\u043D: ';
+  let msg='🔍 Скан: ';
   cells.forEach(([cx,cy,cz])=>{
     if(pShots.has(cx+','+cy+','+cz)) return;
     const hasShip=eGrid[cz][cy][cx]>0;
@@ -1404,16 +1404,18 @@ function playerScan(){
     const idx=scanResults.findIndex(s=>s.x===cx&&s.y===cy&&s.z===cz);
     if(idx>=0) scanResults.splice(idx,1);
     scanResults.push({x:cx,y:cy,z:cz,col,at:scanTick});
-    const lbl=hasShip?'\uD83D\uDFE0':'\u2B1C';
+    const lbl=hasShip?'🟠 корабль':'⬜ пусто';
     msg+=cStr(cx,cy,cz)+' '+lbl+'  ';
-    addLog('\u0421\u043A\u0430\u043D '+cStr(cx,cy,cz)+' -> '+lbl,'s');
+    addLog('Скан '+cStr(cx,cy,cz)+' → '+lbl,'s');
   });
   setMsg(msg,'#994400'); scanTick++; pruneScan(); renderE(); updateUI(); passTurn();
 }
 function pruneScan(){ scanResults=scanResults.filter(s=>scanTick-s.at<3); }
 function passTurn(){ turn='e'; updateUI(); setTimeout(botTurn,1200); }
 
+// ═══════════════════════════════════════════
 // BOT AI
+// ═══════════════════════════════════════════
 function botTurn(){
   if(isOver) return;
   const pTot=totalCells(pGrid); let going=true;
@@ -1427,26 +1429,27 @@ function botTurn(){
     const [tx,ty,tz]=tgt; eShots.add(tx+','+ty+','+tz);
     const isHit=pGrid[tz][ty][tx]>0; renderP(); updateUI();
     if(isHit){
-      sndBot(); sndHit(); addLog('\u0412\u0440\u0430\u0433: '+cStr(tx,ty,tz)+' -> \uD83D\uDCA5 \u043F\u043E\u043F\u0430\u043B!','b');
+      sndBot(); sndHit(); addLog('Враг: '+cStr(tx,ty,tz)+' → 💥 попал!','b');
       face6(tx,ty,tz).forEach(([nx,ny,nz])=>{ if(!eShots.has(nx+','+ny+','+nz)) huntQ.push([nx,ny,nz]); });
       if(hitCells(eShots,pGrid)>=pTot){ endGame(false); return; }
-    } else { addLog('\u0412\u0440\u0430\u0433: '+cStr(tx,ty,tz)+' -> \u043F\u0440\u043E\u043C\u0430\u0445','b'); going=false; }
+    } else { addLog('Враг: '+cStr(tx,ty,tz)+' → промах','b'); going=false; }
   }
-  if(!isOver){ turn='p'; if(superCube) bonusShot=true; updateUI(); setMsg('\uD83C\uDFAF \u0412\u0430\u0448 \u0445\u043E\u0434!','#00cc55'); }
+  if(!isOver){ turn='p'; if(superCube) bonusShot=true; updateUI(); setMsg('🎯 Ваш ход!','#00cc55'); }
 }
 
+// ═══════════════════════════════════════════
 // END GAME
+// ═══════════════════════════════════════════
 function endGame(won){
   isOver=true; if(raf){cancelAnimationFrame(raf);raf=null;} renderE();
   if(won) sndVictory(); else sndDefeat();
   saveCount();
-  gaEvent('game_end',{result:won?'win':'lose',shots:shotCount,mode:isTut()?'tutorial':(onlineMode?'online':'full')});
   const eTot=totalCells(eGrid),pTot=totalCells(pGrid),pH=hitCells(eShots,pGrid);
   const acc=shotCount?Math.round(hitCount/shotCount*100):0;
-  document.getElementById('ov-i').textContent=won?'\uD83C\uDFC6':'\uD83D\uDC80';
-  document.getElementById('ov-t').textContent=won?'\u041F\u041E\u0411\u0415\u0414\u0410!':'\u041F\u041E\u0420\u0410\u0416\u0415\u041D\u0418\u0415';
+  document.getElementById('ov-i').textContent=won?'🏆':'💀';
+  document.getElementById('ov-t').textContent=won?'ПОБЕДА!':'ПОРАЖЕНИЕ';
   document.getElementById('ov-t').style.color=won?'#00ff66':'#ff2200';
-  document.getElementById('ov-s').innerHTML='\u0412\u044B\u0441\u0442\u0440\u0435\u043B\u043E\u0432: '+shotCount+'<br>\u041F\u043E\u043F\u0430\u0434\u0430\u043D\u0438\u0439: '+hitCount+' \u0438\u0437 '+eTot+'<br>\u0422\u043E\u0447\u043D\u043E\u0441\u0442\u044C: '+acc+'%<br>\u041F\u043E\u0442\u0435\u0440\u044C: '+pH+' \u0438\u0437 '+pTot;
+  document.getElementById('ov-s').innerHTML='Выстрелов: '+shotCount+'<br>Попаданий: '+hitCount+' из '+eTot+'<br>Точность: '+acc+'%<br>Потерь: '+pH+' из '+pTot;
   const ab=document.getElementById('ad-box'), rb=document.getElementById('rp-btn');
   if(!won){
     ab.style.display='block'; rb.style.display='none';
@@ -1456,17 +1459,17 @@ function endGame(won){
   showScr('s-over');
 }
 
+// ═══════════════════════════════════════════
 // MONETISATION
+// ═══════════════════════════════════════════
 function buySuperCube(){
-  gaEvent('supercube_click',{});
-  if(superCube){alert('\u2705 \u0423\u0436\u0435 \u0430\u043A\u0442\u0438\u0432\u0438\u0440\u043E\u0432\u0430\u043D!');return;}
-  if(confirm('\uD83D\uDC8E \u0421\u0423\u041F\u0415\u0420-\u041A\u0423\u0411 5\u00B3 \u2014 99 \u20B8')){
+  if(superCube){alert('✅ Супер-куб уже активирован!');return;}
+  if(confirm('💎 СУПЕР-КУБ 5³ — 99 ₸\n\n• Куб 5×5×5 вместо кораблей 3³\n• Доп. выстрел при каждом промахе\n\nКупить?')){
     superCube=true;
     const b=document.getElementById('sc-btn');
-    b.innerHTML='\uD83D\uDC8E \u0410\u041A\u0422\u0418\u0412\u0415\u041D \u2705';
+    b.innerHTML='💎  СУПЕР-КУБ АКТИВЕН ✅';
     b.style.opacity='.4'; b.style.cursor='default';
-    gaEvent('supercube_purchase',{});
-    alert('\u2705 \u0410\u043A\u0442\u0438\u0432\u0438\u0440\u043E\u0432\u0430\u043D\u043E!');
+    alert('✅ Активировано! Действует со следующей игры.');
   }
 }
 
@@ -1474,35 +1477,11 @@ loadCount();
 window.addEventListener('resize',()=>{
   if(!R1||!R2) return;
   [['cp',0],['ce',1]].forEach(([id,i])=>{
-    const c=document.getElementById(id); const W=c.parentElement.clientWidth||170; const H=Math.min(W,210);
+    const c=document.getElementById(id); const W=c.parentElement.clientWidth||170; const H=Math.min(W,380);
     const R=i===0?R1:R2, K=i===0?K1:K2;
     R.setSize(W,H); K.aspect=W/H; K.updateProjectionMatrix();
   });
 });
-
 </script>
-
-<!-- TUTORIAL OVERLAY -->
-<div id="tut">
-  <div class="tut-box">
-    <div class="tut-icon" id="tut-icon">&#x1F30C;</div>
-    <div class="tut-title" id="tut-title"></div>
-    <div class="tut-body" id="tut-body"></div>
-    <div class="tut-prog" id="tut-prog"></div>
-    <button class="tut-ok" onclick="tutNext()">&#x41F;&#x41E;&#x41D;&#x42F;&#x41B; &#x203A;</button>
-  </div>
-</div>
-
-
-<!-- ONLINE SEARCHING OVERLAY -->
-<div id="online-ui">
-  <div class="ol-box">
-    <div class="ol-icon" id="ol-icon">&#x2699;</div>
-    <div class="ol-title" id="ol-title">&#x41F;&#x41E;&#x418;&#x421;&#x41A; &#x421;&#x41E;&#x41F;&#x415;&#x420;&#x41D;&#x418;&#x41A;&#x410;</div>
-    <div class="ol-body" id="ol-body">&#x41F;&#x43E;&#x434;&#x43A;&#x43B;&#x44E;&#x447;&#x430;&#x435;&#x43C;&#x441;&#x44F;...</div>
-    <button class="ol-cancel" onclick="cancelOnline()">&#x2715; &#x41E;&#x422;&#x41C;&#x415;&#x41D;&#x410;</button>
-  </div>
-</div>
-
 </body>
 </html>
